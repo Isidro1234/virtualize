@@ -1,65 +1,83 @@
+import { Button, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import Image from "next/image";
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+
+
+
+export default function Home(){
+  return (<VStack gap={0}>
+      <VStack gap={0} position={'relative'} backgroundColor={'black'} justifyContent={'center'} width={'100%'} height={400}>
+        <Image alt="background" fill style={{height:'100%', opacity:".3", objectFit:"cover"}} src={'/learn.jpg'}/>
+        <VStack zIndex={100} position={'absolute'}>
+              <Heading fontSize={25} color={'white'}>Global interactive learning Platform</Heading>
+              <Text fontSize={13} textAlign={'center'} width={400} color={"#e6e6e6e6"}>Connect with students across the globe, share experience,
+                learn from the best Universities
+              </Text>
+              <Button bg={'#00bf63'} borderRadius={10}>Get Started Today</Button>
+        </VStack>
+      </VStack>
+      
+      <HStack gap={0} marginTop={0} width={'100%'} padding={0} justifyContent={'space-evenly'} alignItems={'center'}>
+        <VStack margin={0} padding={10} justifyContent={'center'} alignItems={'flex-start'} flex={1}>
+          <Heading color={'green'}>Cross Global classes</Heading>
+        <Text width={300} color={'gray'}>
+  University students from both leading and underprivileged institutions
+  around the world can share online lessons and collaborate in virtual
+  classrooms. This promotes multicultural experiences, scientific
+  collaboration, knowledge exchange, and greater social inclusion across
+  diverse communities.
+</Text>
+        <Button bg={'#00bf63'}>Learn More</Button>
+        </VStack>
+        <VStack flex={1.2} height={400} position={'relative'}>
+        <Image src={'/new.jpg'} alt="ic" fill style={{height:'100%', objectFit:"cover"}}/>
+        </VStack>
+      </HStack>
+      <HStack gap={0} marginTop={0} width={'100%'} padding={0} flexDirection={'row-reverse'} justifyContent={'space-evenly'} alignItems={'center'}>
+        <VStack margin={0} padding={10} justifyContent={'center'} alignItems={'flex-start'} flex={1}>
+          <Heading color={'green'}>Multi-disciplinary live tutoring lessons</Heading>
+          <Text width={300} color={'gray'}>
+    With the emerging livestreaming industry, university students can provide
+    live tutoring sessions to learners around the world. This fosters an
+    environment of accessibility, inclusion, and continuous learning while
+    helping students develop valuable skills that are shaping the future of our
+    global society.
+  </Text>
+        <Button bg={'#00bf63'}>Learn More</Button>
+        </VStack>
+        <VStack flex={1.13} height={400} position={'relative'}>
+        <Image src={'/new.jpg'} alt="ic" fill style={{height:'100%', objectFit:"cover"}}/>
+        </VStack>
+      </HStack>
+      <HStack gap={0} marginTop={0} width={'100%'} padding={0} justifyContent={'space-evenly'} alignItems={'center'}>
+        <VStack margin={0} padding={10} justifyContent={'center'} alignItems={'flex-start'} flex={1}>
+          <Heading color={'green'}>Online Debate forums </Heading>
+        <Text width={300} color={'gray'}>University students can participate in debate forums with peers from around
+  the world, discussing relevant topics, analyzing them from diverse cultural
+  and academic perspectives, and gaining a deeper understanding of global
+  issues and societies.
+</Text>
+        <Button bg={'#00bf63'}>Learn More</Button>
+        </VStack>
+        <VStack flex={1.2} height={400} position={'relative'}>
+        <Image src={'/new.jpg'} alt="ic" fill style={{height:'100%', objectFit:"cover"}}/>
+        </VStack>
+      </HStack>
+      <HStack gap={0} marginTop={0} width={'100%'} padding={0} flexDirection={'row-reverse'} justifyContent={'space-evenly'} alignItems={'center'}>
+        <VStack margin={0} padding={10} justifyContent={'center'} alignItems={'flex-start'} flex={1}>
+          <Heading color={'green'}>Global Events</Heading>
+          <Text width={300} color={'gray'}>
+      Universities can organize cross-institutional events where students from
+  different colleges and countries can interact, collaborate, and share
+  experiences. These events provide opportunities to expand professional and
+  social networks, develop communication skills, and build meaningful
+  connections with peers from diverse backgrounds.
+  </Text>
+        <Button bg={'#00bf63'}>Learn More</Button>
+        </VStack>
+        <VStack flex={1.13} height={400} position={'relative'}>
+        <Image src={'/new.jpg'} alt="ic" fill style={{height:'100%', objectFit:"cover"}}/>
+        </VStack>
+      </HStack>
+  </VStack>)
 }
