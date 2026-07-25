@@ -3,7 +3,7 @@ import { Box, Button, Heading, HStack, Span, Text, VStack } from "@chakra-ui/rea
 import Image from "next/image";
 import VirtualPage from "../public/main-virtualize.svg"
 import Footer from "@/components/structure/Footer";
-import * as motion from "motion/react-client";
+import { motion } from "motion/react"
 
 
 

@@ -3,7 +3,7 @@ import { Heading, HStack, VStack , Text } from '@chakra-ui/react'
 import React from 'react'
 import Logo from "../../public/logo2.svg"
 import Logos2 from "../../public/inta2.svg"
-import * as motion from "motion/react-client";
+import { motion } from "motion/react"
 export default function Footer() {
   return (
     <motion.div style={{width:"100%", background:"#1d1d1d"}} initial={{ opacity: 0}}

@@ -1,12 +1,13 @@
+"use client"
 import { Input, VStack, Text , Heading , Span, Button, HStack } from '@chakra-ui/react'
 import React from 'react'
-import * as motion from "motion/react-client";
+import { motion } from "motion/react"
 import Image from "next/image";
 
 
 export default function Aboutus() {
   return (
-    <VStack gap={0}>
+    <VStack gap={0} background={"#1d1d1d"}>
        <motion.div style={{width:"100%"}} initial={{opacity:0}} animate={{opacity:1, }} transition={{duration:1}}>
              <VStack  gap={0} position={'relative'} alignItems={'flex-start'} backgroundColor={'#1d1d1d'} justifyContent={'center'} width={'100%'} height={"90vh"}>
                <VStack padding={10}   marginTop={4} zIndex={100} position={'absolute'} alignItems={'flex-start'}>
