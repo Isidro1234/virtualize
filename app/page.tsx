@@ -32,7 +32,7 @@ export default function Home(){
           <Text color={'gray'} fontSize={12}>help students make best out of college</Text>
 
           <Box marginTop={4} borderRadius={20}  padding={2}>
-            <Image style={{borderRadius:20}} height={900} width={900} alt="image" src={'/virtrs.png'}/>
+            <Image style={{borderRadius:20}} height={900} width={900} alt="image" src={'/virtnologo.png'}/>
           </Box>
         
         </VStack>
