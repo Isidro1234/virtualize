@@ -5,7 +5,7 @@
   --foreground: #171717;
 }
 .nav-bar-links{
-  color:gray;
+  color:rgb(213, 210, 210);
   font-size: 12px;
   cursor: pointer;
   transition: all ease-in-out 300ms;
@@ -38,7 +38,7 @@ body {
 
 ::-webkit-scrollbar{
   width: 5px;
-  background-color: #232323;
+  background-color: white;
 }
 ::-webkit-scrollbar-thumb{
   width: 5px;
@@ -50,8 +50,9 @@ div .hero::after{
   content: " ";
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(to bottom right ,rgb(3, 45, 9)  57% ,#000000b9 50% );
+  background-image: linear-gradient(to bottom right ,rgba(1, 18, 3, 0.735)  99% ,#000000b9 50% );
   width: 100%;
+ 
 }
 .link-items{
   font-size:12px;
@@ -62,4 +63,13 @@ div .hero::after{
 .link-items:hover{
   color:#00bf63;
   text-decoration:underline;
+}
+
+.menu-itemLogged{
+  font-size: 12px;
+  color: gray;
+}
+
+.post-horizontal::-webkit-scrollbar{
+  display:none
 }

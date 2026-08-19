@@ -1,0 +1,35 @@
+import React from "react"
+import {VStack, Box , Button, Heading, HStack, Text} from "@chakra-ui/react"
+import AvatarInfoCard from "./AvartarInfoCard"
+import Image from "next/image"
+
+export default function SideRight(){
+    return(
+        <VStack className="post-horizontal"  minWidth={350}  padding={5} top={"72px"} right={5} position={'fixed'}>
+            <Box  position={'relative'} background={'black'} borderRadius={15} height={300} width={'100%'}>
+                <Button zIndex={200}  fontSize={10} color={'white'} background={'red'}  borderRadius={50} size={'2xs'} right={5} top={5} position={'absolute'}>Live</Button>
+                <Button zIndex={200} fontSize={10} background={'purple'} color={'white'}  borderRadius={50} size={'2xs'} left={5} top={5} position={'absolute'}>30.5k</Button>
+               
+
+                <AvatarInfoCard/>
+               
+                <Image alt={"image-live"} src={'https://images.pexels.com/photos/37758111/pexels-photo-37758111.jpeg'} fill style={{height:"100%" , borderRadius:15, width:"100%", opacity:1 , objectFit:"cover"}}/>
+                                      
+            </Box>
+            <Box padding={5} background={'#f6f6f6'} borderRadius={15} height={220} width={'100%'}>
+                <Heading>Hubs</Heading>
+                <HStack marginTop={4} justifyContent={'flex-start'}>
+                    <Box position={'relative'} background={'white'} borderRadius={10} height={100} width={100}>
+                        <Image alt={"image-live"} src={'https://images.pexels.com/photos/24304586/pexels-photo-24304586.jpeg'} fill style={{height:"100%" , borderRadius:10, width:"100%", opacity:1 , objectFit:"cover"}}/>
+                    </Box>
+                    <VStack gap={2} alignItems={'flex-start'}>
+                        <Heading lineHeight={1} fontSize={17}>UTA Engineering</Heading>
+                        <Text lineHeight={1} fontSize={12}>University of Texas Austin</Text>
+                        <Text lineHeight={1} fontSize={10}>360 members</Text>
+                        <Button fontSize={12} size={"2xs"}>Join</Button>
+                    </VStack>
+                </HStack>
+            </Box>
+       </VStack>
+    )
+}

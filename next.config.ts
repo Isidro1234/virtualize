@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
         hostname:  'njinga-worker.njinga.workers.dev',
         pathname:  '/**',
       },
+      {
+        protocol: 'https',
+        hostname:  'images.pexels.com',
+        pathname:  '/**',
+      },
     ],
   },
 

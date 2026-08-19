@@ -1,16 +1,18 @@
 "use client"
 import { Heading, HStack, VStack , Text } from '@chakra-ui/react'
 import React from 'react'
-import Logo from "../../public/logo2.svg"
+import Logo from "../../public/logo5.svg"
 import Logos2 from "../../public/inta2.svg"
 import { motion } from "motion/react"
+import { usePathname } from 'next/navigation'
 export default function Footer() {
+  const pathname = usePathname()
   return (
-    <motion.div style={{width:"100%", background:"#1d1d1d"}} initial={{ opacity: 0}}
-      whileInView={{ opacity: 1,}}
+    <motion.div style={{width:"100%", background:"#1d1d1d", opacity:1}} initial={{ opacity: 1, background:"#1d1d1d"}}
+      whileInView={{ opacity: 1, background:"#1d1d1d"}}
       transition={{ duration: 1 }}
       viewport={{ once: false, amount: 0.2 }} >
-    <VStack width={"100%"} background={"#1d1d1d"}  minHeight={'80vh'}>
+    <VStack display={pathname.includes('/user') ? "none" : "flex"} width={"100%"} background={"#1d1d1d"}  minHeight={'80vh'}>
       <HStack justifyContent={"space-between"} alignItems={"flex-start"}  padding={10} width={'100%'}>
               
               <VStack alignItems={"flex-start"}>
@@ -37,10 +39,10 @@ export default function Footer() {
               </VStack>
           </HStack>
        
-          <VStack justifyContent={"center"} gap={0} alignItems={"center"}>
-             <Logo height="70px" width="70px"  style={{scale:2}} />
+          <VStack justifyContent={"center"} marginBottom={7} gap={0} alignItems={"center"}>
+             <Logo   style={{scale:7}} />
           </VStack>
-           <VStack marginTop={-1} justifyContent={"center"} gap={0} alignItems={"center"}>
+           <VStack justifyContent={"center"} gap={0} alignItems={"center"}>
              <Logos2 height="70px" width="70px"  style={{scale:2, marginLeft:"85px"}} />
           </VStack>
           
