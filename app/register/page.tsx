@@ -1,3 +1,4 @@
+"use client"
 import { Box, Button, Heading, HStack, Input, Text, VStack } from '@chakra-ui/react'
 import Image from 'next/image'
 import React from 'react'

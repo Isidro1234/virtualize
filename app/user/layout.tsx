@@ -12,11 +12,15 @@ export default function UserLayout({
   return (
     <HStack className="post-horizontal"  width={"100%"}  display={'grid'} gridTemplateColumns={'.1fr 1fr'}   alignItems="flex-start" >
       <SideBar/>
-      <VStack  overflowY={'auto'} height={'100vh'}>
+      <VStack className="post-horizontal"   >
           <NavbarLogged/>
-          {children}
+
+             {children}
+            
+ 
+         
       </VStack>
-     
+      
     </HStack>
   )
 }
