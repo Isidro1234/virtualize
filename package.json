@@ -15,6 +15,7 @@
     "@stream-io/video-react-sdk": "^1.41.0",
     "dotenv": "^17.4.2",
     "firebase": "^12.18.0",
+    "firebase-admin": "^14.3.0",
     "gsap": "^3.15.0",
     "lucide-react": "^1.28.0",
     "motion": "^12.42.2",
