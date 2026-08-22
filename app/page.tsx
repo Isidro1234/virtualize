@@ -37,8 +37,8 @@ export default function Home(){
         
         </VStack>
       </motion.div>
-      <motion.div style={{width:"100%"}} initial={{ opacity: 0, x: -350 }}
-  whileInView={{ opacity: 1, x: 0 }}
+      <motion.div style={{width:"100%"}} initial={{ opacity: 0, }}
+  whileInView={{ opacity: 1 }}
   transition={{ duration: 1 }}
   viewport={{ once: false, amount: 0.2 }} > 
 <HStack className={'Debates'}  justifyContent={'flex-start'} width={'100%'} padding={10} background={'#1f1f1f'}>
@@ -75,8 +75,8 @@ export default function Home(){
 
       </HStack>
       </motion.div>
-      <motion.div style={{width:"100%", padding:5}} initial={{ opacity: 0, x:20 , borderRadius:50}}
-  whileInView={{ opacity: 1, x:0, borderRadius:20}}
+      <motion.div style={{width:"100%", padding:5}} initial={{ opacity: 0, borderRadius:50}}
+  whileInView={{ opacity: 1, borderRadius:20}}
   transition={{ duration: 1 }}
   viewport={{ once: false, amount: 0.2 }} > 
      <HStack className={'activities'} justifyContent={'flex-start'} alignItems={'center'} width={'100%'}  padding={10} background={'#1a1a1a'}>
