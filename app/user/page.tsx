@@ -8,7 +8,7 @@ import DocCard from "../../components/structure/DocCard"
 import AvatarLiveCircle from '../../components/structure/AvartarLiveCircle'
 export default function UserVisitant() {
   return (
-    <HStack height={'100vh'} padding={2} overflowY={'auto'} width={'100%'} position={'relative'}  alignItems={'flex-start'} paddingBottom={10}>
+    <HStack  padding={2} overflowY={'auto'} width={'100%'} position={'relative'}  alignItems={'flex-start'} paddingBottom={10}>
     
         <VStack alignItems={'flex-start'} flex={1} padding={0} >
             <VStack alignItems={'flex-start'} width={'100%'}>
@@ -49,7 +49,7 @@ export default function UserVisitant() {
         </VStack>
 
         
-         <SideRight/>
+       
     </HStack>
   )
 }

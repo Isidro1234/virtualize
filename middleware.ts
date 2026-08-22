@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 const protectedRoutes = ['/user']
-const public_Only = ['/services', '/universities' , 'aboutus']
+const public_Only = ['/services' , '/universities' , '/aboutus', '/register' , '/login']
 export function middleware (request:NextRequest){
      const token = request.cookies.get('session_virtualise')?.value;
      const {pathname} = request.nextUrl

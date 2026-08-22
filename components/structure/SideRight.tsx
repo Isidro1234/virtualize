@@ -5,8 +5,8 @@ import Image from "next/image"
 
 export default function SideRight(){
     return(
-        <VStack className="post-horizontal"  minWidth={50} maxWidth={340} width={'100%'} position={'relative'}  padding={5} top={"0px"} right={0} left={0} height={'100%'} marginLeft={-4}>
-            <Box  position={'relative'} background={'black'} borderRadius={15} height={300} width={'100%'}>
+        <VStack className="post-horizontal"  minWidth={50} maxWidth={340} width={'100%'} position={'relative'}  padding={5} paddingTop={0} marginTop={0} top={0} bottom={0} right={0} left={0} marginLeft={0} justifySelf={'flex-start'}>
+            <Box  position={'relative'} background={'black'} borderRadius={15} height={250} width={'100%'}>
                 <Button zIndex={200}  fontSize={10} color={'white'} background={'red'}  borderRadius={50} size={'2xs'} right={5} top={5} position={'absolute'}>Live</Button>
                 <Button zIndex={200} fontSize={10} background={'purple'} color={'white'}  borderRadius={50} size={'2xs'} left={5} top={5} position={'absolute'}>30.5k</Button>
                
