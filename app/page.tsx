@@ -31,8 +31,8 @@ export default function Home(){
           <Heading color={'#00bf63'}>Our Platform</Heading>
           <Text color={'gray'} fontSize={12}>help students make best out of college</Text>
 
-          <Box marginTop={0} borderRadius={20}  padding={2}>
-            <Image className={'images'} style={{borderRadius:20, minWidth:200 , width:'100%', maxWidth:700}} height={900}  width={900} alt="image" src={'/v1.png'}/>
+          <Box marginTop={0} borderRadius={20}  padding={2} width={'100%'} display={'flex'} justifyContent={'center'}>
+            <Image className={'images'} style={{borderRadius:20, minWidth:200 , width:'100%', maxWidth:700, height:'auto'}} height={900}  width={900} alt="image" src={'/v1.png'}/>
           </Box>
         
         </VStack>
@@ -42,14 +42,14 @@ export default function Home(){
   transition={{ duration: 1 }}
   viewport={{ once: false, amount: 0.2 }} > 
 <HStack className={'Debates'}  justifyContent={'flex-start'} width={'100%'} padding={10} background={'#1f1f1f'}>
-        <VStack alignItems={'flex-start'} flex={1} padding={10} paddingBottom={0}>
-          <Heading className="text-title" fontSize={64} color={'white'}>Live <Span color={'#00bf63'}>Debates</Span> </Heading>
-          <Text color={'gray'} minWidth={70} maxWidth={500} marginTop={8}>Students can engage in online debate forums, learn, share-experiences,
+        <VStack alignItems={'flex-start'} flex={1} padding={10} paddingBottom={0} minWidth={0}>
+          <Heading className="text-title" fontSize={{base: 32, md: 48, lg: 64}} color={'white'}>Live <Span color={'#00bf63'}>Debates</Span> </Heading>
+          <Text color={'gray'} minWidth={70} maxWidth={500} width={'100%'} marginTop={8}>Students can engage in online debate forums, learn, share-experiences,
             and improve on their public speaking abilities.
           </Text>
           <Button borderColor={'#00bf63'} color={'#00bf63'} background={'transparent'} borderWidth={1} borderRadius={50} marginTop={2}>Read more</Button>
         </VStack> 
-        <Image className={'images'} style={{minWidth:200 ,width:'100%', maxWidth:500, }} alt="live" height={500} width={500} src={'/debates5.png'}/>
+        <Image className={'images'} style={{minWidth:200 ,width:'100%', maxWidth:500, height:'auto'}} alt="live" height={500} width={500} src={'/debates5.png'}/>
 
 
       </HStack>
@@ -63,9 +63,9 @@ export default function Home(){
            <Image className="professor" alt="live"   width={300} height={300}  src={'/professor.png'}/>
         </Box>
        
-        <VStack alignItems={'flex-start'}  padding={10}>
-          <Heading className="text-title" fontSize={64} color={'#2d2d2d'}>Live <Span color={'#00bf63'}>Tutors</Span> </Heading>
-          <Text color={'gray'} minWidth={70} maxWidth={500} marginTop={8}>Students, Professors, Self-taught individuals can share their knowledge with 
+        <VStack alignItems={'flex-start'}  padding={10} minWidth={0}>
+          <Heading className="text-title" fontSize={{base: 32, md: 48, lg: 64}} color={'#2d2d2d'}>Live <Span color={'#00bf63'}>Tutors</Span> </Heading>
+          <Text color={'gray'} minWidth={70} maxWidth={500} width={'100%'} marginTop={8}>Students, Professors, Self-taught individuals can share their knowledge with 
             the world, teach a variety of materials, to peers, aid in doubts.
           </Text>
           <Button borderColor={'#00bf63'} color={'#00bf63'} background={'transparent'} borderWidth={1} borderRadius={50} marginTop={2}>Read more</Button>
@@ -82,16 +82,16 @@ export default function Home(){
      <HStack className={'activities'} justifyContent={'flex-start'} alignItems={'center'} width={'100%'}  padding={10} background={'#1a1a1a'}>
         
        
-        <VStack alignItems={'flex-start'}  padding={10} paddingBottom={5} flex={1}>
-          <Heading className="text-title" fontSize={48} width={590} lineHeight={1.2} color={'white'}>Free extra-curriculum  <Span color={'#00bf63'}>Courses</Span> </Heading>
-          <Text color={'gray'} minWidth={70} maxWidth={500} marginTop={4}>We offer a huge stack of free courses for anyone willing to learn.
+        <VStack alignItems={'flex-start'}  padding={10} paddingBottom={5} flex={1} minWidth={0}>
+          <Heading className="text-title" fontSize={{base: 28, md: 36, lg: 48}} minWidth={70} maxWidth={590} width={'100%'} lineHeight={1.2} color={'white'}>Free extra-curriculum  <Span color={'#00bf63'}>Courses</Span> </Heading>
+          <Text color={'gray'} minWidth={70} maxWidth={500} width={'100%'} marginTop={4}>We offer a huge stack of free courses for anyone willing to learn.
             We will be  working with schools and the education department to 
             turn these courses CE-credited
           </Text>
           <Button borderColor={'#00bf63'} color={'#00bf63'} background={'transparent'} borderWidth={1} borderRadius={50} marginTop={2}>Read more</Button>
         </VStack> 
         <Box position={'relative'} display={'flex'} alignItems={"center"} height={'100%'} marginTop={0}>
-           <Image className={'images'} alt="live" style={{minWidth:200,width:'100%', maxWidth:700}}  height={700} width={700} src={'/course.png'}/>
+           <Image className={'images'} alt="live" style={{minWidth:200,width:'100%', maxWidth:700, height:'auto'}}  height={700} width={700} src={'/course.png'}/>
         </Box>
         
 
@@ -105,16 +105,16 @@ export default function Home(){
       <HStack className={'feedback'} justifyContent={'center'} width={'100%'} padding={10} background={'#00bf63'}>
         
   
-        <VStack  alignItems={'center'}  padding={10} flex={0}>
-          <Heading className="text-title" textAlign={'center'} fontSize={64} lineHeight={1.0} width={510} color={'white'}>Feedback  <Span color={'green'}>on our work</Span> </Heading>
-          <Text fontSize={24} textAlign={'center'} color={'black'} maxWidth={400} marginTop={2}>Share with us anything we can improve on our application
+        <VStack  alignItems={'center'}  padding={10} flex={0} minWidth={0}>
+          <Heading className="text-title" textAlign={'center'} fontSize={{base: 32, md: 48, lg: 64}} lineHeight={1.0} minWidth={70} maxWidth={510} width={'100%'} color={'white'}>Feedback  <Span color={'green'}>on our work</Span> </Heading>
+          <Text fontSize={{base: 16, md: 20, lg: 24}} textAlign={'center'} color={'black'} maxWidth={400} width={'100%'} marginTop={2}>Share with us anything we can improve on our application
           </Text>
           <Button size={"lg"}  color={'#00bf63'} background={'white'} borderWidth={0} borderRadius={50} marginTop={2}>Read more</Button>
         </VStack> 
         
         
         <Box position={'relative'}  >
-           <Image className={'images'} alt="live" style={{minWidth:200,width:'100%', maxWidth:700}} height={500} width={700} src={'/feedback (2).png'}/>
+           <Image className={'images'} alt="live" style={{minWidth:200,width:'100%', maxWidth:700, height:'auto'}} height={500} width={700} src={'/feedback (2).png'}/>
         </Box>
         
       </HStack>
