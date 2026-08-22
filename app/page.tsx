@@ -11,7 +11,7 @@ export default function Home(){
   return (<VStack gap={0} background={'#1d1d1d'}>
     <motion.div style={{width:"100%"}} initial={{opacity:0}} animate={{opacity:1, }} transition={{duration:1}}>
       <VStack className="hero" gap={0} position={'relative'} alignItems={'flex-start'} backgroundColor={'green'} justifyContent={'center'} width={'100%'} height={'90vh'}>
-        <video style={{width:"100%", height:"100%", objectFit:"cover", filter:"blur(3px)"}} playsInline autoPlay loop src={'/vid (2).mp4'} />
+        <Image fill style={{width:"100%", height:"100%", objectFit:"cover", filter:"blur(0px)"}} alt="image-hero" src={'/school.png'} />
         <VStack zIndex={200} padding={10}   marginTop={4}  position={'absolute'} alignItems={'flex-start'}>
               <Text borderRadius={50} padding={0} fontSize={12}  color={"#00bf63"}>From the classroom to the world
               </Text>

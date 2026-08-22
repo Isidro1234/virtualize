@@ -77,7 +77,7 @@ export default function Login() {
       'relative'
     } padding={10} height={'120vh'} background={'black'} justifyContent={'center'} alignItems={'center'}>
         <VStack gap={2} position={'relative'} zIndex={100} borderRadius={10} justifyContent={'center'}  padding={10}>
-          <VStack gap={2} zIndex={200} minW={400} >
+          <VStack gap={2} zIndex={200} minW={200}  maxWidth={400}>
             
             <Logo  style={{scale:9, marginTop:15}}/>
           <Box marginTop={4}>

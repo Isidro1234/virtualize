@@ -13,8 +13,8 @@ export default function Universities() {
                <VStack padding={10}   marginTop={10} zIndex={100} position={'absolute'} alignItems={'flex-start'}>
                      <Text borderRadius={50} padding={0} fontSize={12}  color={"#00bf63"}>Are you an Universities?
                      </Text>
-                     <Heading fontSize={45} color={'white'} lineHeight={1.2} width={520}>Let's <Span color={'#00bf63'}>Connect</Span> </Heading>
-                     <Text marginTop={4} fontSize={18}  width={400} color={"#e6e6e6e6"}>From Shared cross-university classes
+                     <Heading className='text-title' fontSize={45} color={'white'} lineHeight={1.2} minWidth={100} maxWidth={520} width={'100%'}>Let's <Span color={'#00bf63'}>Connect</Span> </Heading>
+                     <Text marginTop={4} fontSize={18} minWidth={70} maxWidth={400} color={"#e6e6e6e6"}>From Shared cross-university classes
                        to online debate panels, interviews, free books, collaborative hubs for professors and students, Virtualize is your final
                        online destination for an enhanced learning experience capable of fueling innovation, collaborative work, and academic participation
                      </Text>
@@ -23,19 +23,19 @@ export default function Universities() {
                    </VStack>
              </VStack>
            </motion.div>
-           <motion.div style={{width:"100%"}} initial={{ opacity: 0, x: -350 , background:"white"}}
-             whileInView={{ opacity: 1, x: 0 }}
+           <motion.div style={{width:"100%"}} initial={{ opacity: 0, background:"white"}}
+             whileInView={{ opacity: 1 }}
              transition={{ duration: 1 }}
              viewport={{ once: false, amount: 0.2 }} > 
-           <HStack justifyContent={'flex-start'} width={'100%'}  minHeight={'90vh'} background={'white'}>
+           <HStack className='Debates' justifyContent={'flex-start'} width={'100%'}  padding={10} background={'white'}>
                    <VStack alignItems={'flex-start'} flex={1} padding={10}>
-                     <Heading lineHeight={1.1} fontSize={64} color={'#1d1d1d'}>Register now University on  <Span color={'#00bf63'}> our platforms</Span> </Heading>
-                     <Text color={'gray'} maxWidth={500} marginTop={8}>Students participate in online debate forums, learn, share-experiences,
+                     <Heading className='text-title' lineHeight={1.1} fontSize={64} color={'#1d1d1d'}>Register now University on  <Span color={'#00bf63'}> our platforms</Span> </Heading>
+                     <Text color={'gray'} minWidth={100} maxWidth={500} marginTop={8}>Students participate in online debate forums, learn, share-experiences,
                        and improve on their public speaking habilities.
                      </Text>
                      <Button borderColor={'#00bf63'} color={'#00bf63'} background={'transparent'} borderWidth={1} borderRadius={50} marginTop={2}>Read more</Button>
                    </VStack> 
-                   <Image alt="live" height={500} width={500} src={'/debates5.png'}/>
+                   <Image className='images' alt="live" height={500} style={{borderRadius:20}} width={500} src={'/school.png'}/>
            
            
                  </HStack>

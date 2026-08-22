@@ -8,6 +8,7 @@ import {useEffect , useRef , useState} from "react"
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import Icons from '../../utils/exportIcons'
+import { DrawerCustom } from './DrawerCustom'
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const navref = useRef<HTMLDivElement>(null)
@@ -57,9 +58,14 @@ export default function Navbar() {
           <Link href={'/aboutus'}><Text className='nav-bar-links' ></Text><Text className='nav-bar-links' color={scrolled ? "#1d1d1d" : "white"}>About us</Text></Link>
           <Button onClick={()=>{router.push('/login')}} borderRadius={50} color={'#00bf63'} _hover={{background:"#00bf63", color:"white"}} paddingLeft={7} bg={'transparent'} borderColor={'#00bf63'} paddingRight={7} >Login</Button>
         </HStack>
-        <VStack className='menu-combo' paddingRight={5}>
+        <DrawerCustom
+        icon={
+          <VStack className='menu-combo' paddingRight={5}>
           <Icons.Menu width={34} height={34} color={scrolled ? "#1d1d1d" : "white"}/>
         </VStack>
+        }
+        />
+        
 
     </HStack>
   ) 

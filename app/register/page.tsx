@@ -1,17 +1,21 @@
 "use client"
 import { Box, Button, Heading, HStack, Input, Text, VStack } from '@chakra-ui/react'
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react'
 import Logo from "../../public/logo5.svg"
 import Link from 'next/link'
 import Icons from '../../utils/exportIcons'
 export default function Login() {
+    const [username , setUsername] = useState("")
+    const [email , setEmail] = useState("")
+    const [password , setPassword] = useState("")
+    const [loading, setLoading] = useState(false)
   return (
     <VStack position={
       'relative'
     } padding={10} height={'120vh'} background={'black'} justifyContent={'center'} alignItems={'center'}>
         <VStack gap={2} marginTop={10} position={'relative'} zIndex={100} borderRadius={10} justifyContent={'center'}  padding={10}>
-          <VStack gap={2} zIndex={200} minW={400}>
+          <VStack gap={2} zIndex={200} minW={200}  maxWidth={400}>
             
             <Logo  style={{scale:9, marginTop:15}}/>
           <Box marginTop={4}>
