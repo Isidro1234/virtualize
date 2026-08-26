@@ -23,14 +23,7 @@ if (!token) return;
 let decode;
 try {
   decode = await adminAuth?.verifyIdToken(token);
-} catch (error: any) {
-  if (error.code === 'auth/id-token-expired') {
-    return redirect('/login')
-  }
-  console.error(error);
-  return;
-}
-
+  
 const uid = decode?.uid;
 if (!uid) {
   return redirect('/login')
@@ -71,6 +64,11 @@ if(user?.role[0] == 'university'){
 }else{
   return redirect('/login')
 }
-
+} catch (error: any) {
+  if (error.code === 'auth/id-token-expired') {
+    return redirect('/login')
+  }
+  return redirect('/login')
+}
 
 }
