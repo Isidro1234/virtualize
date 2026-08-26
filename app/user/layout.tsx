@@ -25,8 +25,7 @@ try {
   decode = await adminAuth?.verifyIdToken(token);
 } catch (error: any) {
   if (error.code === 'auth/id-token-expired') {
-    redirect('/login')
-    return;
+    return redirect('/login')
   }
   console.error(error);
   return;
