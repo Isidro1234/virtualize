@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import { Button } from '@chakra-ui/react'
 import { signOut } from 'firebase/auth'
 import React from 'react'
@@ -15,7 +15,7 @@ export default function Settings() {
     }
   return (
     <div>
-      <Button onClick={logout}>logout</Button>
+      <Button onClick={logout}>log out</Button>
     </div>
   )
 }

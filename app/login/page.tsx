@@ -4,14 +4,17 @@ import Image from 'next/image'
 import React, { useState } from 'react'
 import Logo from "../../public/logo5.svg"
 import Link from 'next/link'
-import Icons from '../../utils/exportIcons'
+import {Icons} from '../../utils/exportIcons'
 import { toaster, Toaster } from '../../components/ui/toaster'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../../config/firestore'
+import { useRouter } from 'next/navigation'
+import { createSession } from '../actions/auth'
 export default function Login() {
   const [email , setEmail] = useState("")
   const [password , setPassword] = useState("")
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
   async function Login(){
     setLoading(true)
     if(!email || !password){
@@ -42,6 +45,8 @@ export default function Login() {
       setLoading(false)
       return
     }
+    const token = await credentials.user.getIdToken()
+    await createSession(token) 
     toaster.create({
         title:"user logged",
         description:"Welcome back Sr",
@@ -49,6 +54,7 @@ export default function Login() {
         type:"success"
       })
       setLoading(false)
+      router.push('/user')
     return 
     } catch (error:any) {
       if(error?.message?.includes('auth')){

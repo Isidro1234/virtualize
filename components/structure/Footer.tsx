@@ -7,12 +7,13 @@ import { motion } from "motion/react"
 import { usePathname } from 'next/navigation'
 export default function Footer() {
   const pathname = usePathname()
+  const notshow = ['/login', '/services' , '/register', '/', '/aboutus']
   return (
     <motion.div style={{width:"100%", background:"#1d1d1d", opacity:1}} initial={{ opacity: 1, background:"#1d1d1d"}}
       whileInView={{ opacity: 1, background:"#1d1d1d"}}
       transition={{ duration: 1 }}
       viewport={{ once: false, amount: 0.2 }} >
-    <VStack display={pathname.includes('/user') ? "none" : "flex"} width={"100%"} flexWrap={'wrap'} minWidth={300} background={"#1d1d1d"}  minHeight={'80vh'}>
+    <VStack display={!notshow.includes(pathname) ? "none" : "flex"} width={"100%"} flexWrap={'wrap'} minWidth={300} background={"#1d1d1d"}  minHeight={'80vh'}>
       <HStack justifyContent={"space-between"} alignItems={"flex-start"}  padding={10} width={'100%'}  flexWrap={'wrap'} minWidth={300}>
               
               <VStack alignItems={"flex-start"}>

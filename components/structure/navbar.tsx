@@ -7,7 +7,7 @@ import Search from  '../../public/icons/search.svg'
 import {useEffect , useRef , useState} from "react"
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import Icons from '../../utils/exportIcons'
+import {Icons} from '../../utils/exportIcons'
 import { DrawerCustom } from './DrawerCustom'
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -39,8 +39,9 @@ export default function Navbar() {
     window.removeEventListener("scroll", handleScroll);
   };
 }, []);
+const notshow = ['/login', '/services' , '/register', '/', '/aboutus']
   return (
-    <HStack className={'nav-bar'} display={pathname.includes('/user') ? "none" : "flex"} ref={navref} zIndex={500}  background={'transparent'} position={'fixed'} width={"100%"} padding={5}>
+    <HStack className={'nav-bar'} display={!notshow.includes(pathname) ? "none" : "flex"} ref={navref} zIndex={500}  background={'transparent'} position={'fixed'} width={"100%"} padding={5}>
       <VStack   onClick={()=>{router.push('/')}}  alignItems={'flex-start'} flex={1}>
         {scrolled ? 
         <Logo style={{scale:4, marginLeft:75, cursor:"pointer"}} height="50px" width="50px"/>

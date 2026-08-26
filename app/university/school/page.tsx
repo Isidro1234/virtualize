@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function UniversityLayout() {
+export default function School() {
   return (
     <div>
       

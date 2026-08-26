@@ -1,24 +1,24 @@
 import React from 'react'
 import {VStack , HStack , Box, Heading, Avatar, Text , Button, Input} from "@chakra-ui/react"
-import Icons from "../../utils/exportIcons"
+import {Icons} from "../../utils/exportIcons"
 
 export default function PostCard(){
     return(
-        <VStack gap={5} minWidth={700} width={'100%'} borderRadius={20} borderWidth={1.5} padding={8} alignItems={'flex-start'}>
+        <VStack gap={5} minWidth={700} width={'100%'} borderRadius={20} background={'#17191a'} borderWidth={0} padding={8} alignItems={'flex-start'}>
         
                         <HStack alignItems={'center'} width={'100%'}>
                           <Avatar.Root>
                             <Avatar.Fallback name={"W"}/>
                           </Avatar.Root>
                           <Box flex={1}>
-                            <Heading fontSize={14}>Wilson</Heading>
+                            <Heading fontSize={14} color={'white'}>Wilson</Heading>
                             <Text marginTop={-1} color={'gray'} fontSize={10}>UHD Professor</Text>
                           </Box>
                           <Button borderRadius={50} background={"transparent"}>
                             <Icons.Reply color="#1d1d1d"/>
                           </Button>
                         </HStack>
-                        <Text maxWidth={'100%'} color={'#1d1d1d'} fontSize={18} marginTop={5}>Physics is the study of the universe and the phenomenon that occurs around us;
+                        <Text maxWidth={'100%'} color={'#f6f6f6'} fontSize={18} marginTop={5}>Physics is the study of the universe and the phenomenon that occurs around us;
                           so when we care to matter about the universe, we care to matter about us</Text>
                         <HStack marginTop={4}>
                           <Button borderRadius={50} background={"transparent"}>

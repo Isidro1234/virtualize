@@ -1,6 +1,7 @@
 "use client"
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { StreamVideo, StreamVideoClient } from "@stream-io/video-react-sdk"
+import { deleteSession } from '../app/actions/auth';
 
 const StreamChatContext = createContext<any>({})
 
@@ -15,7 +16,12 @@ export default function StreamChat({ children, uid , token }: StreamChatProps) {
   const apikey = process.env.NEXT_PUBLIC_STREAM_API_KEY || ""
   useEffect(() => {
     // Instantiate the heavy SDK class safely on the client environment
-    
+    if(!uid || !token){
+        deleting()
+    }
+    async function deleting(){
+        return await deleteSession()
+    }
     if(!apikey) return;
     const streamClient = new StreamVideoClient({
       apiKey:apikey,

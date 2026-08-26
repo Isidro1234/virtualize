@@ -76,7 +76,7 @@ div .hero::after{
   display:none
 }
 .text-side-bar{
-  color:rgb(21, 21, 21);
+  color:rgb(218, 215, 215);
   font-size:12px;
 }
 .no-show{
@@ -137,4 +137,30 @@ div .hero::after{
       height: 300px;
       object-fit: contain;
   }
+}
+
+
+ div .scroll-special::-webkit-scrollbar{
+  background-color: #131313;
+  border-radius: 50px;
+}
+
+.sibe-cont{
+  width: 100%;
+  transition: all ease-in 200ms;
+  border-radius: 0px;
+  cursor: pointer;
+  justify-content: center;
+}
+.sibe-cont:hover{
+  background-color: #00bf63;
+  width: 100%;
+  border-radius: 0px;
+  cursor: pointer;
+}
+.sibe-cont:active{
+  background-color: #00bf63;
+  width: 100%;
+  border-radius: 5px;
+  cursor: pointer;
 }

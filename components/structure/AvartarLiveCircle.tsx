@@ -10,7 +10,7 @@ export default function AvatarLiveCircle(){
                 <Avatar.Fallback name={'isi'}/>
                 <Avatar.Image src="https://images.pexels.com/photos/37795361/pexels-photo-37795361.jpeg"/>
             </Avatar.Root>
-            <Text fontSize={10}>Calculus</Text>
+            <Text color={'gray'} fontSize={10}>Calculus</Text>
         </Box>
     )
 }

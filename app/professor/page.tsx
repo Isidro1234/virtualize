@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function Uni() {
+export default function page() {
   return (
     <div>
-      
+      Hello world
     </div>
   )
 }

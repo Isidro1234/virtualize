@@ -4,7 +4,7 @@ import Image from 'next/image'
 import React, { useState } from 'react'
 import Logo from "../../public/logo5.svg"
 import Link from 'next/link'
-import Icons from '../../utils/exportIcons'
+import {Icons} from '../../utils/exportIcons'
 import { Toaster, toaster } from '../../components/ui/toaster'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { auth } from '../../config/firestore'
@@ -55,7 +55,7 @@ export default function Login() {
         await updateProfile( credentials.user, {
           displayName:username
         })
-        await createUserAccount(username , email , credentials.user.uid)
+        await createUserAccount(username , email , credentials.user.uid )
         toaster.create({
             title:"user logged",
             description:"Welcome back Sr",

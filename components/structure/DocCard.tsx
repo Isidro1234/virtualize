@@ -1,6 +1,6 @@
 import React from 'react'
 import {VStack , HStack , Box, Heading, Avatar, Text , Button, Input} from "@chakra-ui/react"
-import Icons from "../../utils/exportIcons"
+import {Icons} from "../../utils/exportIcons"
 import Image from 'next/image'
 
 export default function DocCard(){

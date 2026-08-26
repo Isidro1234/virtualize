@@ -1,6 +1,6 @@
 "use server"
 import { cookies } from "next/headers";
-import { admindb } from "../../config/admin-firestore";
+import { adminAuth, admindb } from "../../config/admin-firestore";
 import {StreamClient} from "@stream-io/node-sdk"
 
 
@@ -23,6 +23,32 @@ export async function deleteSession(){
     cookie.delete('session_virtualise')
 }
 
+export async function creatAuthAccount(username:string , email:string, password:string, 
+    photo:string | null , role:string | null){
+    try {
+        const photourl = photo || ''
+        const user = await adminAuth.createUser({email, password, photoURL:photourl })
+        await adminAuth.updateUser(user.uid , {displayName:username})
+        const uid = user.uid
+         await admindb.collection('users').doc(uid).create({
+        name:username,
+        email:email,
+        createdAt:new Date(),
+        photo:photourl,
+        role:role
+     })
+     await stream.upsertUsers([{
+        id:uid,
+        image:photourl,
+        name:username,
+     }])
+     return true
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
 export async function createUserAccount(username:string, email:string , uid:string){
     try {
         await admindb.collection('users').doc(uid).create({
@@ -36,8 +62,10 @@ export async function createUserAccount(username:string, email:string , uid:stri
         image:"",
         name:username,
      }])
+     return true
     } catch (error) {
         console.log(error)
+        return false
     }
      
 }
