@@ -6,24 +6,28 @@ import { deleteSession } from './actions/auth'
 import { adminAuth } from '../config/admin-firestore'
 
 export default async function Home() {
-  const cookie =  await cookies()
+  const cookie = await cookies()
   const token = cookie.get('session_virtualise')?.value;
-  try {
-    if(token){
+  
+  let shouldRedirect = false;
+
+  if (token) {
+    try {
       const decode = await adminAuth.verifyIdToken(token)
-      const uid = decode.uid;
-      if(uid){
-        return redirect('/user')
+      if (decode?.uid) {
+        shouldRedirect = true;
       }
-      return
+    } catch (error) {
+      // Firebase token verification failed (expired or invalid token)
+      console.error("Token verification failed:", error);
+      // Optional: Clear the invalid session cookie here if needed
     }
-    return (
-    <HomeCustom/>
-  )
-  } catch (error) {
-     return (
-    <HomeCustom/>
-  )
   }
 
+  // Execute redirect completely outside of the try-catch block
+  if (shouldRedirect) {
+    redirect('/user')
+  }
+
+  return <HomeCustom />
 }
