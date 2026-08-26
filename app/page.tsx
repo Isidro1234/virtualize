@@ -8,12 +8,22 @@ import { adminAuth } from '../config/admin-firestore'
 export default async function Home() {
   const cookie =  await cookies()
   const token = cookie.get('session_virtualise')?.value;
-  if (token) {
-     redirect('/user')
-  }
-  return (
+  try {
+    if(token){
+      const decode = await adminAuth.verifyIdToken(token)
+      const uid = decode.uid;
+      if(uid){
+        return redirect('/user')
+      }
+      return
+    }
+    return (
     <HomeCustom/>
   )
-  
- 
+  } catch (error) {
+     return (
+    <HomeCustom/>
+  )
+  }
+
 }
