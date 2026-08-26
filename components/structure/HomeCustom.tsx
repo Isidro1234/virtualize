@@ -1,7 +1,6 @@
 "use client"
 import { Box, Button, Heading, HStack, Span, Text, VStack } from "@chakra-ui/react";
 import Image from "next/image";
-import VirtualPage from "../public/main-virtualize.svg"
 import { motion } from "motion/react"
 
 
