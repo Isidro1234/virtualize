@@ -26,8 +26,12 @@ const cookie  = await cookies()
   if(!token){
     return redirect('/login')
   }
+  let decode ;
   try {
-    const decode = await adminAuth.verifyIdToken(token)
+    decode = await adminAuth.verifyIdToken(token)
+    } catch (error) {
+    decode = null
+  }
   if(!decode){
       return redirect('/login')
   }
@@ -35,12 +39,12 @@ const cookie  = await cookies()
 const catg = ['Live Sessions' , 'Debates' ]
 const docref = await admindb.collection('users').doc(uid).get()
     if(!docref.exists){
-        return
+       return redirect('/login')
     }
     const user = docref.data()
     if(user?.role[0] !== 'university'){
-                    return redirect('/login')
-        }
+          return redirect('/login')
+    }
   return (
     <HStack width={'100%'} background={'#111313'}  height={'100vh'} padding={5} gap={5} alignItems={'flex-start'}>
       <SibarUser  user={user} />
@@ -49,8 +53,6 @@ const docref = await admindb.collection('users').doc(uid).get()
       </MainUser>
     </HStack>
   )
-  } catch (error) {
-    return redirect('/login')
-  }
+  
   
 }

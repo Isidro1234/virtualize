@@ -23,7 +23,9 @@ if (!token) return;
 let decode;
 try {
   decode = await adminAuth?.verifyIdToken(token);
-  
+ }catch (error: any) {
+  decode = null
+}
 const uid = decode?.uid;
 if (!uid) {
   return redirect('/login')
@@ -31,6 +33,7 @@ if (!uid) {
 
 const docref = await admindb.collection('users').doc(uid).get();
 if(!docref.exists){
+    console.log('here 2')
     return redirect('/login')
 }
 const user = docref.data()
@@ -39,7 +42,7 @@ if(user?.role[0] == 'university'){
   return redirect(`/university`)
 }else if(user?.role[0] == 'professor'){
   return redirect('/professor')
-}else if (user?.role[0] == 'individual'){
+}
   const streamtoken = await getStreamToken(uid)
  
   return (
@@ -61,14 +64,6 @@ if(user?.role[0] == 'university'){
     </StreamChat>
    
   )
-}else{
-  return redirect('/login')
-}
-} catch (error: any) {
-  if (error.code === 'auth/id-token-expired') {
-    return redirect('/login')
-  }
-  return redirect('/login')
-}
+
 
 }
