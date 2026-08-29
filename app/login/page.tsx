@@ -1,7 +1,7 @@
 "use client"
 import { Box, Button, Heading, HStack, Input, Text, VStack } from '@chakra-ui/react'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { Suspense, useState } from 'react'
 import Logo from "../../public/logo5.svg"
 import Link from 'next/link'
 import {Icons} from '../../utils/exportIcons'
@@ -9,7 +9,8 @@ import { toaster, Toaster } from '../../components/ui/toaster'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../../config/firestore'
 import { useRouter } from 'next/navigation'
-import { createSession } from '../actions/auth'
+import { createSession, redirectRoute } from '../actions/auth'
+import Copyright from '../../components/structure/Copyright'
 export default function Login() {
   const [email , setEmail] = useState("")
   const [password , setPassword] = useState("")
@@ -47,6 +48,8 @@ export default function Login() {
     }
     const token = await credentials.user.getIdToken()
     await createSession(token) 
+    const routing = await redirectRoute()
+    router.push(routing)
     toaster.create({
         title:"user logged",
         description:"Welcome back Sr",
@@ -54,7 +57,7 @@ export default function Login() {
         type:"success"
       })
       setLoading(false)
-      router.push('/user')
+      
     return 
     } catch (error:any) {
       if(error?.message?.includes('auth')){
@@ -103,7 +106,7 @@ export default function Login() {
           <Link href={'/register'}><Text marginTop={2}   color={'#00bf63'} fontSize={12}>Don't have an account yet? click here</Text></Link>
           <Text  lineHeight={1.1} marginTop={3} textAlign={'center'} color={'gray'} fontSize={10}>Universities and colleges connected in a unprecedente manner</Text>
           <Text  textAlign={'center'} color={'gray'} fontSize={10}>Want to know more about our work? contact us</Text>
-          <Text  textAlign={'center'} color={'gray'} fontSize={10}>&copy; Copyright inta {new Date().getFullYear()}</Text>
+          <Text  textAlign={'center'} color={'gray'} fontSize={10}>&copy; Copyright inta <Suspense fallback={null}><Copyright/></Suspense></Text>
           </VStack>
           <Toaster/>
           <Box opacity={.5} borderRadius={10} zIndex={100} background={'black'}  height={'100%'} width={'100%'} position={'absolute'}></Box>

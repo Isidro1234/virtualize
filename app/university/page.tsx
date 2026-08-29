@@ -6,23 +6,12 @@ import { adminAuth, admindb } from '../../config/admin-firestore'
 import DialogingComp from '../../components/structure/DialogingComp'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
+import { cacheData, getSession } from '../actions/auth'
 
 export default async function Uni() {
-    const cookie  = await cookies()
-      const token = cookie.get('session_virtualise')?.value;
-      if(!token){
-        return redirect('/login')
-      }
+    
       try {
-        const decode = await adminAuth.verifyIdToken(token)
-      if(!decode){
-         return redirect('/login')
-      }const uid = decode.uid;
-    const docref = await admindb.collection('users').doc(uid).get()
-        if(!docref.exists){
-            return
-        }
-    const user = docref.data()
+        const user = await getSession()
      if(user?.role[0] !== 'university'){
                 return redirect('/login')
     }

@@ -5,21 +5,21 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 const protectedRoutes = ['/user', '/university' , '/admin']
-const public_Only = ['/services' , '/universities' , '/aboutus', '/register' , '/login']
-export async function middleware (request:NextRequest){
+const public_Only = ['/', '/services' , '/universities' , '/aboutus', '/register' , '/login']
+
+function pathMatch(pathname:string , routes:string[]){
+   return routes.some(route => {
+      if(route === '/') return pathname === '/';
+      return pathname === route || pathname.startsWith(route + '/')
+   })
+}
+export  function proxy (request:NextRequest){
      const token = request.cookies.get('session_virtualise')?.value;
      const {pathname} = request.nextUrl
-     const isProtected = protectedRoutes.some(route => pathname.includes(route));
-     const isPublicOnly = public_Only.some(route => pathname.includes(route));
+     const isProtected = pathMatch(pathname , protectedRoutes)
+     const isPublicOnly = pathMatch(pathname, public_Only)
 
 
-     if(request.nextUrl.pathname.startsWith('/login')){
-      const response = NextResponse.next()
-      if(request.cookies.has('session_virtualise')){
-         request.cookies.delete('session_virtualise')
-      }
-      return response
-     }
      if(isProtected && !token){
         const logurl = new URL('/login', request.url);
         logurl.searchParams.set("callback", pathname);

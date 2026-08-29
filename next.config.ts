@@ -11,7 +11,9 @@ const nextConfig: NextConfig = {
   // ── Experimental ──────────────────────────────────────────────────────────
   experimental: {
     optimizePackageImports: ['@chakra-ui/react'],
+    cacheComponents:true,
   },
+  
 
   // ── Images ────────────────────────────────────────────────────────────────
   images: {

@@ -164,3 +164,14 @@ div .hero::after{
   border-radius: 5px;
   cursor: pointer;
 }
+.box{
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 15px;
+  align-items: center;
+  justify-content: center;
+  width: 250px;
+ height: 157px;
+  background-color: #00bf63;
+}

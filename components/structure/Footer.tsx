@@ -1,10 +1,11 @@
 "use client"
 import { Heading, HStack, VStack , Text } from '@chakra-ui/react'
-import React from 'react'
+import React, { Suspense } from 'react'
 import Logo from "../../public/logo5.svg"
 import Logos2 from "../../public/inta2.svg"
 import { motion } from "motion/react"
 import { usePathname } from 'next/navigation'
+import Copyright from './Copyright'
 export default function Footer() {
   const pathname = usePathname()
   const notshow = ['/login', '/services' , '/register', '/', '/aboutus']
@@ -46,8 +47,8 @@ export default function Footer() {
            <VStack justifyContent={"center"} gap={0} alignItems={"center"}>
              <Logos2 height="70px" width="70px"  style={{scale:2, marginLeft:"85px"}} />
           </VStack>
-          
-          <Text marginTop={-5} fontSize={12} color={"gray"}>&copy; Copyright inta inc {new Date().getFullYear()}. All rights reserved</Text>
+
+          <Text marginTop={-5} fontSize={12} color={"gray"}>&copy; Copyright inta inc <Suspense fallback={null}><Copyright/></Suspense>. All rights reserved</Text>
     </VStack>
     </motion.div>
     

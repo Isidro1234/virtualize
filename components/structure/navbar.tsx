@@ -39,7 +39,7 @@ export default function Navbar() {
     window.removeEventListener("scroll", handleScroll);
   };
 }, []);
-const notshow = ['/login', '/services' , '/register', '/', '/aboutus']
+const notshow = ['/login', '/services' , '/register', '/', '/aboutus' ,'/universities']
   return (
     <HStack className={'nav-bar'} display={!notshow.includes(pathname) ? "none" : "flex"} ref={navref} zIndex={500}  background={'transparent'} position={'fixed'} width={"100%"} padding={5}>
       <VStack   onClick={()=>{router.push('/')}}  alignItems={'flex-start'} flex={1}>

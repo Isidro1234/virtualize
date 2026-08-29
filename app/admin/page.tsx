@@ -18,7 +18,7 @@ export default async function Admin() {
   }
   let user = null;
   try {
-    const decode = await adminAuth.verifyIdToken(token)
+    const decode = await adminAuth.verifySessionCookie(token)
     if(!decode.uid){
       return redirect('/login')
     }
