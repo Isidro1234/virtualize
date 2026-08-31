@@ -2,17 +2,15 @@ import React from "react"
 import {VStack, Box , Button, Heading, HStack, Text} from "@chakra-ui/react"
 import AvatarInfoCard from "./AvartarInfoCard"
 import Image from "next/image"
+import LiveCardPreviewOuter from "./LiveCardPreviewOuter"
 
 export default function SideRight(){
     return(
         <VStack className="post-horizontal"  minWidth={50} borderRadius={20} background={'#17191a'} maxWidth={340} width={'100%'} position={'relative'}  padding={5} paddingTop={5} marginTop={0} top={0} bottom={0} right={0} left={0} marginLeft={0} justifySelf={'flex-start'}>
-            <Box  position={'relative'} background={'black'} borderRadius={15} height={250} width={'100%'}>
-                <Button zIndex={200}  fontSize={10} color={'white'} background={'red'}  borderRadius={50} size={'2xs'} right={5} top={5} position={'absolute'}>Live</Button>
-                <Button zIndex={200} fontSize={10} background={'purple'} color={'white'}  borderRadius={50} size={'2xs'} left={5} top={5} position={'absolute'}>30.5k</Button>
-               
-               
-                <Image alt={"image-live"} src={'https://images.pexels.com/photos/37758111/pexels-photo-37758111.jpeg'} fill style={{height:"100%" , borderRadius:15, width:"100%", opacity:1 , objectFit:"cover"}}/>
-                                      
+            <Box  position={'relative'} overflow={'hidden'} background={'black'} borderRadius={15} height={250} width={'100%'}>
+                <LiveCardPreviewOuter
+            
+                />                    
             </Box>
             <Box padding={5} background={'#f6f6f6'} borderRadius={15} height={220} width={'100%'}>
                 <Heading>Hubs</Heading>

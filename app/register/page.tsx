@@ -11,10 +11,12 @@ import { auth } from '../../config/firestore'
 import { createUserAccount, redirectRoute } from '../actions/auth'
 import { useRouter } from 'next/navigation'
 import Copyright from '../../components/structure/Copyright'
+import { useStreamContext } from '../../context/StreamVideo'
 export default function Login() {
     const [username , setUsername] = useState("")
     const [email , setEmail] = useState("")
     const [password , setPassword] = useState("")
+    const {setUser , setLogged}:any = useStreamContext()
     const [loading, setLoading] = useState(false)
     const router = useRouter()
     async function createSign(){
@@ -57,17 +59,8 @@ export default function Login() {
           displayName:username
         })
         await createUserAccount(username , email , credentials.user.uid )
-        const routing = await redirectRoute()
-        router.push(routing)
-        toaster.create({
-            title:"user logged",
-            description:"Welcome back Sr",
-            duration:5000,
-            type:"success"
-          })
-          setLoading(false)
-          router.refresh()
-        return 
+        router.push('/user')
+        setLoading(false)
         } catch (error:any) {
           if(error?.message?.includes('auth')){
             toaster.create({

@@ -175,3 +175,13 @@ div .hero::after{
  height: 157px;
   background-color: #00bf63;
 }
+.str-video__livestream-layout , .str-video__video-stream{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.view{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

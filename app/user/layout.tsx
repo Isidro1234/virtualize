@@ -16,7 +16,7 @@ export default async function UserLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  getSession()
+
   return(
     <Suspense fallback={<VStack background={'#1d1d1d'} justifyContent={'center'} alignItems={'center'} height={'100vh'} width={'100%'}>
       <Spinner size={'md'} color={'white'}/>

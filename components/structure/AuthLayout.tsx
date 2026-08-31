@@ -6,7 +6,7 @@ import { HStack, VStack } from '@chakra-ui/react';
 import SideBar from './SideBar';
 import NavbarLogged from './navbarLogged';
 import SideRight from './SideRight';
-import { cacheData, getSession, getStreamToken } from '../../app/actions/auth';
+import { cacheData, deleteSession, getSession, getStreamToken } from '../../app/actions/auth';
 import { adminAuth } from '../../config/admin-firestore';
 import { VerifySession } from '../../app/lib/verifySession';
 
@@ -17,20 +17,13 @@ export default async function AuthLayout({children}:{children:React.ReactNode}) 
     const uid = res?.userId;
     if(!docref){
         console.log('here 2')
-        return redirect('/login')
+        return
     }
     const user = docref
-    
-    if(user?.role[0] == 'university'){
-      return redirect(`/university`)
-    }else if(user?.role[0] == 'professor'){
-      return redirect('/professor')
-    }
+  
     if(!uid) return
-      const streamtoken = await getStreamToken(uid)
      
       return (
-        <StreamChat token={streamtoken || ''} uid={uid}>
             <HStack  gap={0} background={'#131313'}  className="post-horizontal"  width={"100%"}       alignItems="flex-start" >
             <SideBar/>
             <VStack className="post-horizontal"  width={'100%'}  >
@@ -45,7 +38,7 @@ export default async function AuthLayout({children}:{children:React.ReactNode}) 
             </VStack>
             
           </HStack>
-        </StreamChat>
+
        
       )
     

@@ -5,7 +5,7 @@ import { adminAuth, admindb } from '../../config/admin-firestore'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import MainUser from '../../components/structure/MainUser'
-import { cacheData, getSession } from '../../app/actions/auth'
+import { cacheData, deleteSession, getSession } from '../../app/actions/auth'
 
 export default async function UniversityLayoutComp({children}:{children:React.ReactNode}) {
    const schools=[{
@@ -27,12 +27,10 @@ const catg = ['Live Sessions' , 'Debates' ]
 const docref = await getSession()
 
     if(!docref){
-       return redirect('/login')
+       return null
     }
     const user = docref
-    if(user?.role[0] !== 'university'){
-          return redirect('/login')
-    }
+
   return (
     <HStack width={'100%'} background={'#111313'}  height={'100vh'} padding={5} gap={5} alignItems={'flex-start'}>
       <SibarUser  user={user} />

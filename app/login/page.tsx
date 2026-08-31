@@ -11,11 +11,13 @@ import { auth } from '../../config/firestore'
 import { useRouter } from 'next/navigation'
 import { createSession, redirectRoute } from '../actions/auth'
 import Copyright from '../../components/structure/Copyright'
+import { useStreamContext } from '../../context/StreamVideo'
 export default function Login() {
   const [email , setEmail] = useState("")
   const [password , setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const {setUser , setLogged}:any = useStreamContext()
   async function Login(){
     setLoading(true)
     if(!email || !password){
@@ -43,22 +45,14 @@ export default function Login() {
         duration:5000,
         type:"error"
       })
+    
       setLoading(false)
       return
     }
     const token = await credentials.user.getIdToken()
     await createSession(token) 
-    const routing = await redirectRoute()
-    router.push(routing)
-    toaster.create({
-        title:"user logged",
-        description:"Welcome back Sr",
-        duration:5000,
-        type:"success"
-      })
-      setLoading(false)
-      
-    return 
+    router.push('/user')
+    setLoading(false)
     } catch (error:any) {
       if(error?.message?.includes('auth')){
         toaster.create({
@@ -102,7 +96,7 @@ export default function Login() {
             <Input onChange={(e)=>{setPassword(e.target.value)}} outline={'none'} color={"white"} border={"none"} placeholder='password'/>
           </HStack>
           <Text marginTop={2} marginBottom={4} width={'100%'} textAlign={'left'} color={'white'} fontSize={12}>Forgot your password?</Text>
-          <Button onClick={Login} loading={loading} width={'100%'} bg={'#00bf63'}>Log-in</Button>
+          <Button suppressHydrationWarning onClick={Login} loading={loading} width={'100%'} bg={'#00bf63'}>Log-in</Button>
           <Link href={'/register'}><Text marginTop={2}   color={'#00bf63'} fontSize={12}>Don't have an account yet? click here</Text></Link>
           <Text  lineHeight={1.1} marginTop={3} textAlign={'center'} color={'gray'} fontSize={10}>Universities and colleges connected in a unprecedente manner</Text>
           <Text  textAlign={'center'} color={'gray'} fontSize={10}>Want to know more about our work? contact us</Text>

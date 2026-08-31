@@ -1,10 +1,23 @@
 "use client"
 import { Box, Button, HStack, Input , Text, VStack} from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Icons } from '../../utils/exportIcons'
+import { getProf, getuniversities } from '../../app/actions/auth'
+import { CustomSelect } from './CustomSelect'
 
 export default function CourseaddingComp() {
-
+    const [courses, setCourse] = useState<Array<{label:string , value:string}> | null>(null)
+    const [Professors, setProfs] = useState<Array<{label:string , value:string}> | null>(null)
+    useEffect(()=>{
+        async function uni(){
+            const uni = await getuniversities()
+            const profs = await getProf()
+            setCourse(uni || null)
+            setProfs(profs || null)
+        }
+        uni()
+    }, [])
+console.log(courses)
   return (
     <VStack width={'100%'}>
                             <Box background={'#f6f6f6'} width={'100%'} height={200} position={'relative'}>
@@ -21,49 +34,50 @@ export default function CourseaddingComp() {
                             </HStack>
                             <HStack width={'100%'} alignItems={'flex-start'}>
                                   <Box width={'100%'} padding={4} paddingTop={0}>
-                                        <Text>Professor</Text>
                                         <HStack marginTop={2} padding={1} width={'100%'} gap={2} background={'#f6f6f6'} borderRadius={50}>
-                                        <Icons.Mail  style={{marginLeft:10}} strokeWidth={1} height={20} width={20}/>
-                                        <Input flex={1} border={'none'} outline={'none'} placeholder='Professors email'/>  
+                                        <CustomSelect onchange={(e:any)=>{}} 
+                                        items={Professors || []} title='Main College' placeholder='Main College'/>
+                                        
                                         </HStack>
                                 </Box>
                                 <Box width={'100%'} padding={4} paddingTop={0}>
                                         <Text>Course Mode</Text>
                                         <HStack marginTop={2} padding={1} width={'100%'} gap={2} background={'#f6f6f6'} borderRadius={50}>
-                                        <Icons.Mail  style={{marginLeft:10}} strokeWidth={1} height={20} width={20}/>
+                                        <Icons.School  style={{marginLeft:10}} strokeWidth={1} height={20} width={20}/>
                                         <Input flex={1} border={'none'} outline={'none'} placeholder='Professors email'/>  
                                         </HStack>
                                 </Box>
                             </HStack>
-                            <HStack>
+                            <HStack flexWrap={'wrap'}>
                                   <Box width={'100%'} padding={4} paddingTop={0}>
                                         <Text>Start date</Text>
                                         <HStack marginTop={2} padding={1} width={'100%'} gap={2} background={'#f6f6f6'} borderRadius={50}>
-                                        <Icons.Mail  style={{marginLeft:10}} strokeWidth={1} height={20} width={20}/>
-                                        <Input flex={1} border={'none'} outline={'none'} placeholder='Professors email'/>  
+                                        <Icons.Calendar  style={{marginLeft:10}} strokeWidth={1} height={20} width={20}/>
+                                        <Input type='date' flex={1} border={'none'} outline={'none'} placeholder='Professors email'/>  
                                         </HStack>
                                 </Box>
                                 <Box width={'100%'} padding={4} paddingTop={0}>
                                         <Text>End date</Text>
                                         <HStack marginTop={2} padding={1} width={'100%'} gap={2} background={'#f6f6f6'} borderRadius={50}>
-                                        <Icons.Mail  style={{marginLeft:10}} strokeWidth={1} height={20} width={20}/>
-                                        <Input flex={1} border={'none'} outline={'none'} placeholder='Professors email'/>  
+                                        <Icons.Calendar   style={{marginLeft:10}} strokeWidth={1} height={20} width={20}/>
+                                        <Input type='date' flex={1} border={'none'} outline={'none'} placeholder='Professors email'/>  
                                         </HStack>
                                 </Box>
                             </HStack>
                             <HStack>
                                   <Box width={'100%'} padding={4} paddingTop={0}>
-                                        <Text>College 1</Text>
+                                       
                                         <HStack marginTop={2} padding={1} width={'100%'} gap={2} background={'#f6f6f6'} borderRadius={50}>
-                                        <Icons.Mail  style={{marginLeft:10}} strokeWidth={1} height={20} width={20}/>
-                                        <Input flex={1} border={'none'} outline={'none'} placeholder='Professors email'/>  
+                                        
+                                        <CustomSelect onchange={(e:any)=>{}} 
+                                        items={courses || []} title='Main College' placeholder='Main College'/>
                                         </HStack>
                                 </Box>
                                 <Box width={'100%'} padding={4} paddingTop={0}>
-                                        <Text>College 2</Text>
+                                     
                                         <HStack marginTop={2} padding={1} width={'100%'} gap={2} background={'#f6f6f6'} borderRadius={50}>
-                                        <Icons.Mail  style={{marginLeft:10}} strokeWidth={1} height={20} width={20}/>
-                                        <Input flex={1} border={'none'} outline={'none'} placeholder='Professors email'/>  
+                                        <CustomSelect onchange={(e:any)=>{}} 
+                                        items={courses || []} title='Main College' placeholder='Main College'/>
                                         </HStack>
                                 </Box>
                             </HStack>

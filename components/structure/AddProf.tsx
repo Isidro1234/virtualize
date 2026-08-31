@@ -14,11 +14,13 @@ import EventsaddingComp from './EventAddingComp'
 import CourseaddingComp from './CourseAddingComp'
 import { features } from 'process'
 import DocSeriesaddingComp from './Doc&SeriesAddingComp'
+import { useRouter } from 'next/navigation'
 
 export default function AddProf({universities}:{universities:string}) {
     const [name , setName] = useState('')
     const [photo , setPhoto] = useState<File | null>(null)
     const [loading, setLoading] = useState(false)
+    const router = useRouter()
     async function upload(e:File){
         const reader = new FileReader()
         reader.onload = (e)=>{
@@ -80,11 +82,6 @@ export default function AddProf({universities}:{universities:string}) {
             element:<ProfaddingComp/>
         },
          {
-            title:"Lives",
-            image:'',
-            element:<LiveaddingComp/>
-        },
-         {
             title:"Debates",
             image:'',
             element:<DebatesaddingComp/>
@@ -135,7 +132,7 @@ export default function AddProf({universities}:{universities:string}) {
                         )
                     })
                 }
-           
+           <Button onClick={()=>{router.push('/university/lives')}}>Lives</Button>
         </HStack>
         <VStack>
 

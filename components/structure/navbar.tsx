@@ -57,7 +57,7 @@ const notshow = ['/login', '/services' , '/register', '/', '/aboutus' ,'/univers
           <Link href={'/services'}><Text className='nav-bar-links' ></Text><Text className='nav-bar-links' color={scrolled ? "#1d1d1d" : "white"}>Services</Text></Link>
           <Link href={'/universities'}><Text className='nav-bar-links' color={scrolled ? "#1d1d1d" : "white"}>For Universities</Text></Link>
           <Link href={'/aboutus'}><Text className='nav-bar-links' ></Text><Text className='nav-bar-links' color={scrolled ? "#1d1d1d" : "white"}>About us</Text></Link>
-          <Button onClick={()=>{router.push('/login')}} borderRadius={50} color={'#00bf63'} _hover={{background:"#00bf63", color:"white"}} paddingLeft={7} bg={'transparent'} borderColor={'#00bf63'} paddingRight={7} >Login</Button>
+          <Button suppressHydrationWarning onClick={()=>{router.push('/login')}} borderRadius={50} color={'#00bf63'} _hover={{background:"#00bf63", color:"white"}} paddingLeft={7} bg={'transparent'} borderColor={'#00bf63'} paddingRight={7} >Login</Button>
         </HStack>
         <DrawerCustom
         icon={
