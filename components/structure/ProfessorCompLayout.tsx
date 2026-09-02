@@ -25,10 +25,10 @@ export default async function ProfessorCompLayout({children}:{children:React.Rea
 const catg = ['Live Sessions' , 'Debates' ]
 
 const docref = await getSession()
-    if(!docref.exists){
+    if(!docref){
         return
     }
-    const user = docref.data()
+    const user = docref
      if(user?.role[0] !== 'professor'){
             return redirect('/login')
         }
