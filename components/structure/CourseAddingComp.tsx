@@ -1,90 +1,121 @@
 "use client"
-import { Box, Button, HStack, Input , Text, VStack} from '@chakra-ui/react'
-import React, { useEffect, useState } from 'react'
-import { Icons } from '../../utils/exportIcons'
-import { getProf, getuniversities } from '../../app/actions/auth'
-import { CustomSelect } from './CustomSelect'
+import { Box, Heading, HStack, Input, VStack, Button } from '@chakra-ui/react'
+import React, { useRef, useState } from 'react'
+import { CustomSelect } from '../../components/structure/CustomSelect'
+import { store } from '../../utils/storemedia'
+import { toaster, Toaster } from '../../components/ui/toaster'
+import { creatAuthAccount } from '../../app/actions/auth'
 
-export default function CourseaddingComp() {
-    const [courses, setCourse] = useState<Array<{label:string , value:string}> | null>(null)
-    const [Professors, setProfs] = useState<Array<{label:string , value:string}> | null>(null)
-    useEffect(()=>{
-        async function uni(){
-            const uni = await getuniversities()
-            const profs = await getProf()
-            setCourse(uni || null)
-            setProfs(profs || null)
-        }
-        uni()
-    }, [])
-console.log(courses)
+export default function AddUSer() {
+  const [usercat, setUsercat] = useState('')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [previewPic, setPreview] = useState<any>(null)
+  const [pic, setPic] = useState<File | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [country, setCountry] = useState("")
+  const refphoto = useRef<HTMLInputElement>(null)
+
+  function handlePic(pic:any){
+     
+      if(!pic?.name) {
+        toaster.create({
+          title:"No picture uploaded",
+          duration:5000,
+          type:"error"
+        })
+        return
+      };
+      const reader = new FileReader()
+      reader.onload = (e)=>{
+       setPreview(e.target?.result || null) 
+      }
+      reader.readAsDataURL(pic)
+      setPic(pic)
+      toaster.create({
+          title:"picture uploaded",
+          duration:5000,
+          type:"success"
+        })
+      return
+  }
+  async function submit(){
+     setLoading(true)
+    if(!name || !email || !usercat || !country){
+       setLoading(false)
+       toaster.create({
+          title:"user email or name or user category not provided",
+          duration:5000,
+          type:"error"
+        })
+      return;
+    }
+    const password = "test1234"
+    if(!pic?.name){
+      await creatAuthAccount(name , email , password , null , usercat, country)
+       setLoading(false)
+       toaster.create({
+          title:"picture not uploaded",
+          duration:5000,
+          type:"error"
+        })
+      return
+    } 
+    const url = await store({image:pic, name:pic.name , type:pic.type});
+    if(!url){
+       setLoading(false)
+       toaster.create({
+          title:"picture does not exist",
+          duration:5000,
+          type:"error"
+        })
+      return
+    }
+    await creatAuthAccount(name , email , password , url, usercat, country)
+     setLoading(false)
+     toaster.create({
+          title:"user created",
+          duration:5000,
+          type:"success"
+        })
+    return
+  }
   return (
-    <VStack width={'100%'}>
-                            <Box background={'#f6f6f6'} width={'100%'} height={200} position={'relative'}>
-                                <Button bottom={5} right={5} position={'absolute'} borderRadius={50} size={'2xs'}><Icons.Image/></Button>
-                            </Box>
-                            <HStack padding={4} justifyContent={'flex-start'} alignItems={'center'} gap={2} width={'100%'}>
-                                <Box width={'100%'} padding={0}>
-                                    <Text>Course Name</Text>
-                                    <HStack marginTop={2} padding={1} width={'100%'} gap={2} background={'#f6f6f6'} borderRadius={50}>
-                                    <Icons.User2Icon  style={{marginLeft:10}} strokeWidth={1} height={20} width={20}/>
-                                    <Input flex={1} border={'none'} outline={'none'} placeholder='Professors name'/>  
-                                    </HStack>
-                                </Box>
-                            </HStack>
-                            <HStack width={'100%'} alignItems={'flex-start'}>
-                                  <Box width={'100%'} padding={4} paddingTop={0}>
-                                        <HStack marginTop={2} padding={1} width={'100%'} gap={2} background={'#f6f6f6'} borderRadius={50}>
-                                        <CustomSelect onchange={(e:any)=>{}} 
-                                        items={Professors || []} title='Main College' placeholder='Main College'/>
-                                        
-                                        </HStack>
-                                </Box>
-                                <Box width={'100%'} padding={4} paddingTop={0}>
-                                        <Text>Course Mode</Text>
-                                        <HStack marginTop={2} padding={1} width={'100%'} gap={2} background={'#f6f6f6'} borderRadius={50}>
-                                        <Icons.School  style={{marginLeft:10}} strokeWidth={1} height={20} width={20}/>
-                                        <Input flex={1} border={'none'} outline={'none'} placeholder='Professors email'/>  
-                                        </HStack>
-                                </Box>
-                            </HStack>
-                            <HStack flexWrap={'wrap'}>
-                                  <Box width={'100%'} padding={4} paddingTop={0}>
-                                        <Text>Start date</Text>
-                                        <HStack marginTop={2} padding={1} width={'100%'} gap={2} background={'#f6f6f6'} borderRadius={50}>
-                                        <Icons.Calendar  style={{marginLeft:10}} strokeWidth={1} height={20} width={20}/>
-                                        <Input type='date' flex={1} border={'none'} outline={'none'} placeholder='Professors email'/>  
-                                        </HStack>
-                                </Box>
-                                <Box width={'100%'} padding={4} paddingTop={0}>
-                                        <Text>End date</Text>
-                                        <HStack marginTop={2} padding={1} width={'100%'} gap={2} background={'#f6f6f6'} borderRadius={50}>
-                                        <Icons.Calendar   style={{marginLeft:10}} strokeWidth={1} height={20} width={20}/>
-                                        <Input type='date' flex={1} border={'none'} outline={'none'} placeholder='Professors email'/>  
-                                        </HStack>
-                                </Box>
-                            </HStack>
-                            <HStack>
-                                  <Box width={'100%'} padding={4} paddingTop={0}>
-                                       
-                                        <HStack marginTop={2} padding={1} width={'100%'} gap={2} background={'#f6f6f6'} borderRadius={50}>
-                                        
-                                        <CustomSelect onchange={(e:any)=>{}} 
-                                        items={courses || []} title='Main College' placeholder='Main College'/>
-                                        </HStack>
-                                </Box>
-                                <Box width={'100%'} padding={4} paddingTop={0}>
-                                     
-                                        <HStack marginTop={2} padding={1} width={'100%'} gap={2} background={'#f6f6f6'} borderRadius={50}>
-                                        <CustomSelect onchange={(e:any)=>{}} 
-                                        items={courses || []} title='Main College' placeholder='Main College'/>
-                                        </HStack>
-                                </Box>
-                            </HStack>
-                            <Box width={'100%'} padding={4} paddingTop={0} >
-                              <Button width={'100%'}>Submit</Button>  
-                            </Box>
-                            
-                        </VStack>
+    <VStack>
+      <VStack>
+
+      </VStack>
+      <VStack>
+        <HStack>
+          
+          <CustomSelect onchange={(e:any)=>{setUsercat(e)}} items={[{label:"University" , value:"university"},
+            {label:"Professor" , value:"professor"},
+            {label:"Student" , value:"student"},
+            {label:"admin agent" , value:"agent"}
+           ]} title='Select user type' placeholder='what type of user you want to add?'/>
+        </HStack>
+        <HStack>
+          <Box>
+            <Heading fontSize={14}>Name</Heading>
+            <Input onChange={(e)=>{setName(e.target.value)}}  placeholder={`what is your ${usercat || ''} name`}/>
+          </Box>
+          <Box>
+            <Heading fontSize={14}>email</Heading>
+            <Input onChange={(e)=>{setEmail(e.target.value)}} placeholder={`what is your ${usercat || ''} email`}/>
+          </Box>
+          <Box>
+            <Heading fontSize={14}>Photo</Heading>
+            <Input onChange={(e:any)=>{handlePic(e.target.files[0])}} display={'none'} ref={refphoto} type='file'/>
+            <Button onClick={()=>{refphoto.current?.click()}}>photo</Button>
+          </Box>
+          <Box>
+            <Heading fontSize={14}>Country</Heading>
+            <Input onChange={(e)=>{setCountry(e.target.value)}}  type='text'/>
+          </Box>
+        </HStack>
+        <Toaster/>
+        <Button onClick={submit}>Submit</Button>
+      </VStack>
+    </VStack>
   )
 }

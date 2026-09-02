@@ -59,10 +59,7 @@ export default function SideBar(){
                     <Icons.Voicemail  strokeWidth={1} color={'white'} width={19} height={19}/>
                     <Text className={'text-side-bar no-show'}>Debates</Text>
                 </Box>
-                 <Box className={'conteier-text-box'} gap={2} display={"flex"} alignItems={"center"}>
-                    <Icons.Group strokeWidth={1} color={'white'} width={19} height={19}/>
-                    <Text className={'text-side-bar no-show'} >Clubs</Text>
-                </Box>
+                 
                  <Box className={'conteier-text-box'} gap={2} display={"flex"} alignItems={"center"}>
                     <Icons.Toolbox  strokeWidth={1} color={'white'} width={19} height={19}/>
                     <Text className={'text-side-bar no-show'}>Collab Hubs</Text>
@@ -76,10 +73,7 @@ export default function SideBar(){
                 }>
                 </CustomMenu>
                 
-                <Box className={'conteier-text-box'}  gap={2} display={"flex"} alignItems={"center"}>
-                    <Icons.BookmarkPlus strokeWidth={1} color={'white'} width={19} height={19}/>
-                    <Text className={'text-side-bar no-show'}>Bookmark</Text>
-                </Box>
+                
             </VStack>
         </VStack>
     )

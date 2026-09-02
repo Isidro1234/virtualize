@@ -10,7 +10,7 @@ import { getSession } from "./actions/auth";
 import { VerifySession } from "./lib/verifySession";
 import StreamWrapper from "../components/structure/StreamWrapper";
 import { Suspense } from "react";
-import { Text } from "@chakra-ui/react";
+import { Spinner, Text, VStack } from "@chakra-ui/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,16 +43,19 @@ export default async function RootLayout({
         <Provider>
           
           <AuthContextProvider
-          ><Suspense fallback={<Text>Loading...</Text>}>
+          ><Suspense fallback={<VStack background={'#1d1d1d'} justifyContent={'center'} alignItems={'center'} height={'100%'} width={'100%'}>
+            <Spinner size={'md'}/>
+          </VStack>}>
        
               <StreamWrapper>
             
                 <Navbar/>
                 {children}
+                <Footer/>
               </StreamWrapper>
           </Suspense>
             
-           <Footer/>
+           
            </AuthContextProvider>
         </Provider>
        </body>

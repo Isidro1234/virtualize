@@ -7,7 +7,6 @@ import AvatarLiveCircle from './AvartarLiveCircle'
 export default function LiveCardCircle() {
   const calls = useCalls()
   return (<VStack alignItems={'flex-start'} width={'100%'}>
-    <Heading color={'#00bf63'} fontSize={14}>Live Tutoring</Heading>
                               <HStack gap={7}>
       {calls?.map((item, index)=>{
         return(

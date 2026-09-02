@@ -78,6 +78,7 @@ div .hero::after{
 .text-side-bar{
   color:rgb(218, 215, 215);
   font-size:12px;
+  cursor: pointer;
 }
 .no-show{
   display:none
@@ -184,4 +185,7 @@ div .hero::after{
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+.conteier-text-box{
+  cursor: pointer;
 }

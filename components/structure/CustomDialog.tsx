@@ -13,17 +13,12 @@ export const CustomDialog = ({icon, children, title}:{title:string, icon:React.R
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>{title}</Dialog.Title>
+              <Dialog.Title fontSize={12} fontWeight={400}>{title}</Dialog.Title>
             </Dialog.Header>
             <Dialog.Body>
               {children}
             </Dialog.Body>
-            <Dialog.Footer>
-              <Dialog.ActionTrigger asChild>
-                <Button variant="outline">Cancel</Button>
-              </Dialog.ActionTrigger>
-              <Button>Submit</Button>
-            </Dialog.Footer>
+            
             <Dialog.CloseTrigger asChild>
               <CloseButton size="sm" />
             </Dialog.CloseTrigger>

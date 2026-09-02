@@ -13,6 +13,7 @@ export default function AddUSer() {
   const [previewPic, setPreview] = useState<any>(null)
   const [pic, setPic] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
+  const [country, setCountry] = useState("")
   const refphoto = useRef<HTMLInputElement>(null)
 
   function handlePic(pic:any){
@@ -40,7 +41,7 @@ export default function AddUSer() {
   }
   async function submit(){
      setLoading(true)
-    if(!name || !email || !usercat){
+    if(!name || !email || !usercat || !country){
        setLoading(false)
        toaster.create({
           title:"user email or name or user category not provided",
@@ -51,7 +52,7 @@ export default function AddUSer() {
     }
     const password = "test1234"
     if(!pic?.name){
-      await creatAuthAccount(name , email , password , null , usercat)
+      await creatAuthAccount(name , email , password , null , usercat, country)
        setLoading(false)
        toaster.create({
           title:"picture not uploaded",
@@ -70,7 +71,7 @@ export default function AddUSer() {
         })
       return
     }
-    await creatAuthAccount(name , email , password , url, usercat)
+    await creatAuthAccount(name , email , password , url, usercat, country)
      setLoading(false)
      toaster.create({
           title:"user created",
@@ -106,6 +107,10 @@ export default function AddUSer() {
             <Heading fontSize={14}>Photo</Heading>
             <Input onChange={(e:any)=>{handlePic(e.target.files[0])}} display={'none'} ref={refphoto} type='file'/>
             <Button onClick={()=>{refphoto.current?.click()}}>photo</Button>
+          </Box>
+          <Box>
+            <Heading fontSize={14}>Country</Heading>
+            <Input onChange={(e)=>{setCountry(e.target.value)}}  type='text'/>
           </Box>
         </HStack>
         <Toaster/>

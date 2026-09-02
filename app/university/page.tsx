@@ -6,7 +6,7 @@ import { adminAuth, admindb } from '../../config/admin-firestore'
 import DialogingComp from '../../components/structure/DialogingComp'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
-import { cacheData, getSession } from '../actions/auth'
+import { cacheData, getcourses, getCurrentId, getSession } from '../actions/auth'
 
 export default async function Uni() {
     
@@ -30,6 +30,7 @@ export default async function Uni() {
     },
 ]
 const catg = ['Live Sessions' , 'Debates' ]
+  const courses = await getcourses() || []
   return (
 
      
@@ -65,21 +66,26 @@ const catg = ['Live Sessions' , 'Debates' ]
                         <Heading color={'#00bf63'} flex={1} marginTop={5} fontSize={20}>Explore</Heading> 
                         <Heading color={'#00bf63'} fontWeight={400} fontSize={12}>show all</Heading>
                     </HStack>
+                    
                     <HStack width={'100%'} gap={4} alignItems={'flex-start'}>
-                      <Box flex={1}>
+                      {courses?.map((item, index)=>{
+                      return(
+                       <Box flex={1} key={index}>
                          <HStack padding={4} paddingLeft={0} alignItems={'flex-start'}>
                             <Box borderRadius={10} position={'relative'} outline={'none'} overflow={'hidden'} height={100} width={100} background={'#f6f6f6'}>
-                                 <Image  fill style={{width:'100%', height:"100%" , objectFit:"cover"}} src={'/school.png'} alt='image'/>
+                                 <Image  fill style={{width:'100%', height:"100%" , objectFit:"cover"}} src={item?.photo} alt='image'/>
                             </Box> 
                             <VStack gap={1.5} alignItems={'flex-start'} justifyContent={'center'}>
-                              <Heading lineHeight={1} color={'#00bf63'} flex={1} marginTop={2} fontSize={14}>Sociology 1301 - OXU - HCC</Heading> 
+                              <Heading lineHeight={1} color={'#00bf63'} flex={1} marginTop={2} fontSize={14}>{item?.coursename}</Heading> 
                               <Text color={'gray'} lineHeight={1} fontSize={12}>London - Houston</Text>
-                              <Text color={'gray'} lineHeight={1} fontSize={11}>Shared mode</Text>
-                              <Text color={'gray'} lineHeight={1} fontSize={11}>Professor: William Bungher(from Oxford University)</Text>
+                              <Text color={'gray'} lineHeight={1} fontSize={11}>{item?.coursemode}</Text>
+                              <Text color={'gray'} lineHeight={1} fontSize={11}>Professor: {item?.professor} ({item?.unimain})</Text>
                               <Text color={'gray'} lineHeight={1} fontSize={11}>Mondays & Wednesdays | 10:00 am - 12:00 am</Text>
                             </VStack>
                          </HStack>
-                      </Box>
+                      </Box> 
+                      )
+                    })}
                       <Box>
                          <Heading color={'#00bf63'} flex={1} marginTop={5} fontSize={17}>Universities</Heading> 
                          <HStack alignItems={'center'} padding={4} paddingLeft={0}>

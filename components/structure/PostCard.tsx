@@ -1,52 +1,64 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {VStack , HStack , Box, Heading, Avatar, Text , Button, Input} from "@chakra-ui/react"
 import {Icons} from "../../utils/exportIcons"
+import { getComment, getUserAvatarByUid } from '../../app/actions/auth'
+import Image from 'next/image'
+import { CustomCarousel } from './CarousellCustom'
+import CustomComent from './CustomComent'
+import AvatarByUid from './AvatarByUid'
+import LikeButton from './LikeButton'
+import CommentsList from './CommentList'
+import CommentsSection from './CommentList'
 
-export default function PostCard(){
+export default async function PostCard({media, likes , commentnumber, user_id , text, id}:{
+  media:any , user_id:string , text:string , id:string , commentnumber:number, likes:number
+}){
+    const userAvatar = await getUserAvatarByUid(user_id)
+    const {comments, nextCursor, hasMore} = await getComment(id)
     return(
-        <VStack gap={5} minWidth={700} width={'100%'} borderRadius={20} background={'#17191a'} borderWidth={0} padding={8} alignItems={'flex-start'}>
+        <VStack gap={5} minWidth={700} width={'100%'} borderRadius={20} background={'#17191a'} borderWidth={0} padding={0} alignItems={'flex-start'}>
         
-                        <HStack alignItems={'center'} width={'100%'}>
-                          <Avatar.Root>
-                            <Avatar.Fallback name={"W"}/>
+                        <HStack alignItems={'center'} width={'100%'} padding={8} paddingBottom={0}>
+                          <Avatar.Root >
+                            <Avatar.Fallback name={userAvatar?.name}/>
+                            {userAvatar?.image &&
+                            <Avatar.Image src={userAvatar.image}/>
+                            }
                           </Avatar.Root>
                           <Box flex={1}>
-                            <Heading fontSize={14} color={'white'}>Wilson</Heading>
-                            <Text marginTop={-1} color={'gray'} fontSize={10}>UHD Professor</Text>
+                            <Heading fontSize={14} color={'white'}>{userAvatar?.name}</Heading>
+                            <Text marginTop={-1} color={'gray'} fontSize={10}>{userAvatar?.role}</Text>
                           </Box>
                           <Button borderRadius={50} background={"transparent"}>
-                            <Icons.Reply color="#1d1d1d"/>
+                            <Icons.Reply color="white"/>
                           </Button>
                         </HStack>
-                        <Text maxWidth={'100%'} color={'#f6f6f6'} fontSize={18} marginTop={5}>Physics is the study of the universe and the phenomenon that occurs around us;
-                          so when we care to matter about the universe, we care to matter about us</Text>
-                        <HStack marginTop={4}>
-                          <Button borderRadius={50} background={"transparent"}>
-                            <Icons.HeartIcon color="gray"/>
-                            <Text color={'gray'}>25.7k</Text>
-                          </Button>
+                        <Box padding={8} paddingTop={0} paddingBottom={0}>
+                          <Text maxWidth={'100%'} color={'#f6f6f6'} fontSize={18} marginTop={2}>{text}</Text>
+                        
+                        </Box>
+                        <CustomCarousel items={media}/>
+                        <HStack marginTop={-2} padding={5} paddingTop={0} paddingBottom={0}>
+                          <LikeButton likes={likes} uid={id}/>
                           <Button borderRadius={50} background={"transparent"} >
                             <Icons.MessageSquare color="gray"/>
-                            <Text color={'gray'}>2k</Text>
+                            <Text color={'gray'}>{commentnumber || ''}</Text>
                           </Button>
                           <Button borderRadius={50} background={"transparent"}>
                             <Icons.Vote color="gray"/>
-                            <Text color={'gray'}>25.7k</Text>
+                            <Text color={'gray'}></Text>
                           </Button>
                           <Button borderRadius={50} background={"transparent"} >
                             <Icons.Share color="gray"/>
-                            <Text color={'gray'}>25.7k</Text>
+                            <Text color={'gray'}></Text>
                           </Button>
                           
                         </HStack>
-                        <HStack marginTop={-2} width={'100%'} borderTopWidth={1} paddingTop={4}>
-                          <Avatar.Root size={"2xs"}>
-                            <Avatar.Fallback name={'W'}/>
-                          </Avatar.Root>
-                          <Box background={"#f6f6f6"} borderRadius={50} flex={1}>
-                            <Input border={'none'} outline={"none"} placeholder="digit your comment"/>
-                          </Box>
-                        </HStack>
+
+                        <VStack width={'100%'} alignItems={'flex-start'} borderColor={'#1d1d1d'} borderTopWidth={1} marginTop={2}  paddingTop={4}>
+                          <CommentsSection useravatar={userAvatar} postId={id} initialComments={comments} initialCursor={nextCursor} initialHasMore={hasMore}/>
+                        </VStack>
+                        
                         </VStack>
     )
 }

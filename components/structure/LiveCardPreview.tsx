@@ -11,7 +11,7 @@ export default function LiveCardPreview() {
     if(!call){
         return (
             <Box position={'relative'} background={'black'} overflow={'hidden'} borderRadius={15} height={250} width={'100%'}>
-                <video controls={false} autoPlay playsInline muted src={'https://www.pexels.com/download/video/7226920/'} style={{width:'100%', height:'100%', objectFit:'cover'}}/>
+                <video controls={false} autoPlay playsInline muted src={'/Education.mp4'} style={{width:'100%', height:'100%', objectFit:'cover'}}/>
             </Box>
         )
     }
