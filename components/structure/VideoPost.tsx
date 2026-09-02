@@ -104,7 +104,8 @@ export const VideoPostContent = () => {
             setLoading(false)
             return
         }
-        const name = new Date() + "Virtualize"
+        const ext = recordedBlob.type.split("/")[1] || "webm" // "webm"
+        const name = `${Date.now()}-virtualize.${ext}`
         try {
            const url = await store({image:recordedBlob , name:name , type:recordedBlob.type});
         if(!url){
@@ -156,6 +157,7 @@ export const VideoPostContent = () => {
             return
         }
         try {
+          
            const url = await store({image:longVideoFile , name:longVideoFile.name , type:longVideoFile.type});
         if(!url) {
             toaster.create({

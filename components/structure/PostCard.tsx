@@ -37,7 +37,7 @@ export default async function PostCard({media, likes , commentnumber, user_id , 
                           <Text maxWidth={'100%'} color={'#f6f6f6'} fontSize={18} marginTop={2}>{text}</Text>
                         
                         </Box>
-                        <CustomCarousel items={media}/>
+                        <CustomCarousel items={media?.length ? media : [media]}/>
                         <HStack marginTop={-2} padding={5} paddingTop={0} paddingBottom={0}>
                           <LikeButton likes={likes} uid={id}/>
                           <Button borderRadius={50} background={"transparent"} >

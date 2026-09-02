@@ -4,9 +4,20 @@ import { forwardRef } from "react"
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu"
 
 export const CustomCarousel = ({ items }: { items: Array<string> }) => {
+    const IMAGE_EXTENSIONS = [
+  'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg',
+  'bmp', 'ico', 'tiff', 'tif', 'avif', 'heic', 'heif'
+];
+
+const isImage = (url?: string): boolean => {
+  if (!url) return false;
+  const clean = url.split(/[?#]/)[0];
+  const ext = clean.split('.').pop()?.toLowerCase();
+  return !!ext && IMAGE_EXTENSIONS.includes(ext);
+};
   return (
     <Carousel.Root
-      slideCount={items.length}
+      slideCount={items?.length}
       width={'100%'}
       mx="auto"
       gap="4"
@@ -21,10 +32,10 @@ export const CustomCarousel = ({ items }: { items: Array<string> }) => {
         </Carousel.PrevTrigger>
 
         <Carousel.ItemGroup position="relative" width="full">
-          {items.map((src, index) => (
+          {items?.map((src, index) => (
             <Carousel.Item key={index} index={index}>
              
-              {(src.includes('mp4') ||  src.includes('webm'))?
+              {!isImage(src) ?
               <video controls src={src} style={{width:"100%", height:"100%", objectFit:'cover', borderRadius:0}}/>
               :
                <AspectRatio ratio={16 / 9} width="full">
