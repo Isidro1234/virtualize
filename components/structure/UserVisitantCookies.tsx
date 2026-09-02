@@ -26,7 +26,7 @@ export default async function UserVisitantCookies() {
                 <VStack className="post-horizontal" justifyContent={'flex-start'} width={'100%'} maxWidth={700}  alignItems={'flex-start'} >
                   {posts?.map((item,index)=>{
                     return(
-                      <PostCard likes={item?.likes || 0} commentnumber={item?.comment_number} id={item?.id} media={item?.media} text={item?.text} user_id={item?.user_id} key={index}/>
+                      <PostCard likes={item?.likes || 0} commentnumber={item?.comment_number} id={item?.id} media={item?.media || item?.video} text={item?.text} user_id={item?.user_id} key={index}/>
                     )
                   })}
                   
