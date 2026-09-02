@@ -533,7 +533,7 @@ export async function postVideo(video:string, title:string , tag:string | null, 
   const post = {
     id:docref.id,
     user_id:uid,
-    video,
+    media:[video],
     title,
     tag,
     description,
