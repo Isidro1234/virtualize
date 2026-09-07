@@ -3,6 +3,7 @@
 import { VStack } from "@chakra-ui/react";
 import { StreamCall, StreamVideo, StreamVideoClient } from "@stream-io/video-react-sdk";
 import { createContext, useContext, useEffect, useState } from "react";
+import CallManager from "../components/structure/CallManager";
 
 const STREAM_API_KEY = process.env.NEXT_PUBLIC_STREAM_API_KEY || "";
 
@@ -63,6 +64,7 @@ export default function StreamVideoContext({
         children
       ) : (
         <StreamVideo client={videoClient}>
+          <CallManager/>
           {children}
         </StreamVideo>
       )}

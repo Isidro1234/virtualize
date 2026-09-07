@@ -38,14 +38,17 @@ const isImage = (url?: string): boolean => {
               {!isImage(src) ?
               <video controls src={src} style={{width:"100%", height:"100%", objectFit:'cover', borderRadius:0}}/>
               :
-               <AspectRatio ratio={16 / 9} width="full">
-              <Image
-                  src={src}
-                  alt={`Product ${index + 1}`}
-                  objectFit="cover"
-                  borderRadius={0}
-                />
-                </AspectRatio>
+               <Box position="relative" width="full" aspectRatio={16 / 9} overflow="hidden" borderRadius={0}>
+  <Image
+    src={src}
+    alt={`Product ${index + 1}`}
+    position="absolute"
+    inset={0}
+    width="100%"
+    height="100%"
+    objectFit="cover"
+  />
+</Box>
                 }
                 
               

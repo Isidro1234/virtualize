@@ -6,6 +6,7 @@ import { VerifySession } from "../../app/lib/verifySession";
 
 
 
+
 export default async function StreamWrapper({children}:{children:React.ReactNode}){
     let user;
     let uid;
@@ -22,6 +23,7 @@ export default async function StreamWrapper({children}:{children:React.ReactNode
     
     return(
         <StreamVideoContext token={token} userdata={user} uid={uid?.userId || null}>
+           
             {children}
         </StreamVideoContext>
     )

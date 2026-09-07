@@ -1,11 +1,14 @@
+"use client"
 import { Avatar, Box, Heading, HStack, Text, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { Icons } from '../../utils/exportIcons'
 import DialogingComp from './DialogingComp'
 import Image from 'next/image'
 import ButtonCustom from './ButtonCustom'
+import { usePathname } from 'next/navigation'
 
 export default function SibarUser({user}:{user:any}) {
+const  pathname = usePathname()
   return (
             <VStack gap={0} alignItems={'center'} height={'100%'} minWidth={70} borderWidth={0} background={'#17191a'} overflow={'hidden'} 
                      borderRadius={12} padding={0} border={'none'} >
@@ -17,22 +20,22 @@ export default function SibarUser({user}:{user:any}) {
                          
                         <VStack gap={0} width={'100%'} alignItems={'flex-start'} padding={0} flex={1}>
                           <ButtonCustom link='/university/school'>
-                            <Box className='sibe-cont'  padding={4} alignItems={'center'} gap={2} display={'flex'}>
+                            <Box className='sibe-cont'  padding={4} background={pathname.includes('/school') ? '#00bf63' : 'transparent'} alignItems={'center'} gap={2} display={'flex'}>
                               <Icons.School2Icon width="25px" height="25px" color='white' strokeWidth={1}/> 
                             </Box>
                          </ButtonCustom>
                           <ButtonCustom link='/university/Hubs'>
-                            <Box className='sibe-cont' padding={4} alignItems={'center'} gap={2} display={'flex'}>
+                            <Box className='sibe-cont' padding={4} background={pathname.includes('/Hubs') ? '#00bf63' : 'transparent'} alignItems={'center'} gap={2} display={'flex'}>
                                 <Icons.FlaskRound width="25px" height="25px" color='white' strokeWidth={1}/>
                             </Box>
                           </ButtonCustom>
                         <ButtonCustom link='/university/lives'>
-                          <Box className='sibe-cont' padding={4} alignItems={'center'} gap={2} display={'flex'}>
+                          <Box className='sibe-cont' padding={4} background={pathname.includes('/lives') ? '#00bf63' : 'transparent'} alignItems={'center'} gap={2} display={'flex'}>
                             <Icons.CircleDot width="25px" height="25px" color="white" strokeWidth={1}/>
                           </Box>
                         </ButtonCustom>
                        <ButtonCustom link='/university/Debates'>
-                          <Box className='sibe-cont' padding={4} alignItems={'center'} gap={2} display={'flex'}>
+                          <Box className='sibe-cont' padding={4} background={pathname.includes('/Debates') ? '#00bf63' : 'transparent'} alignItems={'center'} gap={2} display={'flex'}>
                             <Icons.VoicemailIcon width="25px" height="25px" color='white' strokeWidth={1}/>
                             </Box>
                        </ButtonCustom>

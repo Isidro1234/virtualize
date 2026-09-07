@@ -6,7 +6,7 @@ import { cacheTag, revalidateTag } from "next/cache";
 import { VerifySession } from "../lib/verifySession";
 import { redirect } from "next/navigation";
 import {SignJWT} from 'jose'
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Filter } from "firebase-admin/firestore";
 import { CommentItem } from "../../utils/type";
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET)
 
@@ -40,35 +40,40 @@ function serializeFirestore<T>(data: T): T {
 export async function createSession(idToken:string){
     const expiresin = 60 * 60 * 24 * 5;
     const decode = await adminAuth.verifyIdToken(idToken)
-    const userdoc = await admindb.collection('users').doc(decode.uid).get()
-    const userdata = userdoc.data()
-    const primaryRole = userdata?.role[0] || 'individual';
+    try {
+        const userdoc = await admindb.collection('users').doc(decode.uid).get()
+        const userdata = userdoc.data()
+        const primaryRole = userdata?.role?.[0] || 'individual';   // ← added ?. before [0]
 
-    const sessionCookies = await adminAuth.createSessionCookie(idToken , {expiresIn:expiresin})
-    
-    const roleTaken =  await new SignJWT({uid:decode.uid , role:primaryRole})
-    .setProtectedHeader({alg:'HS256'})
-    .setIssuedAt()
-    .setExpirationTime('5d')
-    .sign(JWT_SECRET)
+        const sessionCookies = await adminAuth.createSessionCookie(idToken , {expiresIn:expiresin})
+        
+        const roleTaken =  await new SignJWT({uid:decode.uid , role:primaryRole})
+        .setProtectedHeader({alg:'HS256'})
+        .setIssuedAt()
+        .setExpirationTime('5d')
+        .sign(JWT_SECRET)
 
-    const cookie = await cookies()
-    cookie.set('session_virtualise', sessionCookies , {
-      httpOnly:true,
-      secure:true,
-      sameSite:'lax',
-      path:'/' ,
-      maxAge: expiresin 
-    })
+        const cookie = await cookies()
+        cookie.set('session_virtualise', sessionCookies , {
+          httpOnly:true,
+          secure:true,
+          sameSite:'lax',
+          path:'/' ,
+          maxAge: expiresin 
+        })
 
-    cookie.set('user_role', roleTaken , {
-        httpOnly:true,
-        secure:true,
-        sameSite:'lax',
-        path:'/',
-        maxAge:expiresin
-    })
-
+        cookie.set('user_role', roleTaken , {
+            httpOnly:true,
+            secure:true,
+            sameSite:'lax',
+            path:'/',
+            maxAge:expiresin
+        })
+    } catch (error:any) {
+        console.error('createSession failed:', error)   // ← added logging so this isn't silent next time
+        await deleteSession()
+        redirect('/')
+    }
 }
 
 export async function deleteSession(){
@@ -88,32 +93,48 @@ export async function getSession(){
         return null
     }
 }
-export async function creatAuthAccount(username:string , email:string, password:string, 
-    photo:string | null , role:string | null, country:string){
-    try {
-        const photourl = photo || ''
-        const user = await adminAuth.createUser({email, password, photoURL:photourl })
-        await adminAuth.updateUser(user.uid , {displayName:username})
-        const uid = user.uid
-         await admindb.collection('users').doc(uid).create({
-            id:uid,
-        name:username,
-        email:email,
-        createdAt:new Date(),
-        photo:photourl,
-        country,
-        role:[role]
-     })
-     await stream.upsertUsers([{
-        id:uid,
-        image:photourl,
-        name:username,
-     }])
-     return true
-    } catch (error) {
-        console.log(error)
-        return false
-    }
+export async function creatAuthAccount(
+  username: string,
+  email: string,
+  password: string,
+  photo: string | null,
+  role: string | null,
+  country: string
+) {
+  try {
+    const photourl = photo || ''
+    
+    // Create Firebase Auth user
+    const user = await adminAuth.createUser({ email, password, photoURL: photourl })
+    await adminAuth.updateUser(user.uid, { displayName: username })
+
+    const uid = user.uid
+
+    // Save user metadata to Firestore
+    await admindb.collection('users').doc(uid).set({
+      id: uid,
+      name: username,
+      email: email,
+      createdAt: new Date(),
+      photo: photourl,
+      country: country,
+      role: role ? [role] : []
+    })
+
+    // Update Stream Chat user profile
+    await stream.upsertUsers([
+      {
+        id: uid,
+        image: photourl,
+        name: username,
+      },
+    ])
+
+    return true
+  } catch (error) {
+    console.error("Error creating auth account or saving user record:", error)
+    return false
+  }
 }
 
 export async function createUserAccount(username:string, email:string , uid:string){
@@ -160,7 +181,7 @@ export async function creatAuthAccountProfessor(username:string , uniname:string
         if(!uid2) return false;
         const useref = admindb.collection('users').doc(uid2)
         const photourl = photo || ''
-        const email = emails || username.trim() + "@" + uniname + '.edu'
+        const email = emails || username.replaceAll(" ", '') + "@" + uniname + '.edu'
         const password = 'test1234'
         const user = await adminAuth.createUser({email, password, photoURL:photourl })
         await adminAuth.updateUser(user.uid , {displayName:username})
@@ -168,7 +189,7 @@ export async function creatAuthAccountProfessor(username:string , uniname:string
         const check = await useref.get();
         const uninames = check.exists ? check.data()?.name : null;
         const finaluniname = uniname || uninames
-        await admindb.collection('professors').doc(uid).create({
+        await admindb.collection('users').doc(uid).create({
             id:uid,
             name:username,
             email:email,
@@ -206,37 +227,31 @@ export async function cacheData(user_id: string) {
   }
 }
 
-export async function updateUserPhoto({photo , password , name}:{photo:string | null, password:string | null , name:string | null}){
+export async function updateUserPhoto({photo, password, name}: {photo: string | null, password: string | null, name: string | null}) {
     const cookie = await cookies()
     const token = cookie.get('session_virtualise')?.value;
     if(!token) return false;
-    const verify = await adminAuth.verifyIdToken(token)
+    const verify = await adminAuth.verifySessionCookie(token)
     const uid = verify.uid;
     if(!uid) return false;
-    const useref = admindb.collection('users').doc(uid)
     if(!name && !photo && !password) return false
-    if(name){
-        await useref.update({
-        name: name,
-        updatedAt: new Date()
-    })
-    revalidateTag(`user-${uid}`, 'max')
-    return uid
-    } 
-    if(photo){
-        await useref.update({
-        photo:photo,
-        updatedAt: new Date()
-    })
-    revalidateTag(`user-${uid}`, 'max')
-    return uid
+
+    const useref = admindb.collection('users').doc(uid)
+    const updates: Record<string, any> = {}
+    if(name) updates.name = name
+    if(photo) updates.photo = photo
+
+    if(Object.keys(updates).length > 0){
+        updates.updatedAt = new Date()
+        await useref.update(updates)
     }
+
     if(password){
-        await adminAuth.updateUser(uid, {
-            password:password
-        })
-    return uid
+        await adminAuth.updateUser(uid, { password })
     }
+
+    revalidateTag(`user-${uid}`, 'max')
+    return uid
 }
 
 export async function updatCache(uid:string){
@@ -359,10 +374,14 @@ export async function addCourse(coursename: string,
     coursend: string,
     unimain: string,
     unisecond: string | null,
+    isconnectOnly:boolean| null,
     coursedays: string[],
     coursetime: string,
 ) {
     try {
+        if(unimain === unisecond){
+            return null
+        }
         const uid = await getCurrentId()
         if (!uid) return null;
         const docref = admindb.collection('courses').doc()
@@ -374,6 +393,7 @@ export async function addCourse(coursename: string,
             end: coursend,
             unimain,
             unisecond,
+            isconnectOnly,
             professor_ids: professor,
             university_id:uid,
             photo: coursephoto,
@@ -445,16 +465,16 @@ export async function addEvent(Eventname:string, max_limit:number , allowed_entr
 export async function getcourses(){
     const uid = await getCurrentId()
     if(!uid) return
-    return await getcoursesCached(uid)
+    return await getcoursesCached(uid) 
 }
 async function getcoursesCached(uid: string){
     "use cache"
     cacheTag(`courses-${uid}`)
-    const course = await admindb.collection('users').doc(uid).collection('courses').get()
+    const course = await admindb.collection('courses').where("id", "==", uid).get()
     if(course.empty) return null
     const data = course.docs.map((c)=>{
         return c.data()
-    })
+    }) || []
     return serializeFirestore(data);
 }
 
@@ -612,7 +632,7 @@ export async function addComment(uid:string , comment:string){
         sender_role: avatar?.role ?? null
     })
 }
-const COMMENTS_PAGE_SIZE = 5
+const COMMENTS_PAGE_SIZE = 2
 
 
 export async function getComment(
@@ -676,4 +696,50 @@ export async function addLikes(uid:string){
     })
     revalidateTag('posts', 'max') // NEW
     return { liked: true }
+}
+
+export async function getUniversityList(){
+    const currentid = await getCurrentId();
+    if(!currentid) return [];
+    const docuni = await admindb.collection('users').doc(currentid).get()
+    if(!docuni.exists) return [];
+    const name = docuni.data()?.name
+    const docref = await admindb.collection('users').where("role", "array-contains", "university").get()
+    if(docref.empty) return [];
+    const unis = docref.docs.map((uni) => {
+            return { label: uni.data()?.name, value: uni.data()?.id } // uni.id — the doc snapshot's id, not .data()?.id
+        })
+    return unis
+}
+
+export async function getcurrentuserdata(uid:string | null){
+    if(!uid) return null;
+    const docref = await admindb.collection('users').doc(uid).get()
+    if(!docref.exists) return null;
+    const data = docref.data()
+    return data
+}
+
+
+export async function addclassroom(classnumber:number){
+    try {
+      const currentid = await getCurrentId()
+    const currentdata = await getcurrentuserdata(currentid)
+    if(!currentdata) return null;
+    const password = classnumber + "#" + currentdata?.name
+    const email = "classroom" + classnumber + "@" + currentdata?.name.replaceAll(" ", '') + ".edu"
+    const user = await adminAuth.createUser({email , password})
+    const docref = admindb.collection('classrooms').doc(user.uid)
+    const checkexist = await admindb.collection('classrooms').where("number", "==", classnumber).get();
+    if(!checkexist.empty) return null
+    await docref.create({
+        id:docref.id,
+        number:classnumber,
+        university:currentdata?.name
+    })
+    return true  
+    } catch (error) {
+        return false
+    }
+    
 }
