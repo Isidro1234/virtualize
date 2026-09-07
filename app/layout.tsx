@@ -72,7 +72,7 @@ export default async function RootLayout({
         <Provider>
           
           <AuthContextProvider
-          ><Suspense fallback={<VStack background={'#1d1d1d'} justifyContent={'center'} alignItems={'center'} height={'100%'} width={'100%'}>
+          ><Suspense fallback={<VStack background={'#1d1d1d'} justifyContent={'center'} alignItems={'center'} height={'100vh'} width={'100%'}>
             <Spinner size={'md'}/>
           </VStack>}>
        
