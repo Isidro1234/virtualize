@@ -73,7 +73,8 @@ export default async function RootLayout({
           
           <AuthContextProvider
           ><Suspense fallback={<VStack background={'#1d1d1d'} justifyContent={'center'} alignItems={'center'} height={'100vh'} width={'100%'}>
-            <Spinner size={'md'}/>
+            <Spinner  color={'#00bf63'} size={'md'}/>
+
           </VStack>}>
        
               <StreamWrapper>
