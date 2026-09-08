@@ -341,7 +341,9 @@ export async function getProf(){
 async function getProfCached(uid: string){
     "use cache"
     cacheTag(`professors-${uid}`)
-    const uni = await admindb.collection('users').doc(uid).collection('professors').get()
+    const uni = await admindb.collection('users').where(
+       "university_id" , "==" , uid
+    ).where("role","array-contains","uni-professor").get()
     if(uni.empty) return;
     const data = uni.docs.map((d)=>{
         return  {label:d.data()?.name , value:d.id} // CHANGED: value was d.data()?.name — now the professor's actual uid
@@ -403,7 +405,8 @@ export async function addCourse(coursename: string,
         })
         revalidateTag(`courses-${uid}`, 'max')
         return true
-    } catch (error) {
+    } catch (error:any) {
+        console.log(error?.message)
         return null
     }
 }
@@ -470,7 +473,7 @@ export async function getcourses(){
 async function getcoursesCached(uid: string){
     "use cache"
     cacheTag(`courses-${uid}`)
-    const course = await admindb.collection('courses').where("id", "==", uid).get()
+    const course = await admindb.collection('courses').where("university_id", "==", uid).get()
     if(course.empty) return null
     const data = course.docs.map((c)=>{
         return c.data()
@@ -735,11 +738,17 @@ export async function addclassroom(classnumber:number){
     await docref.create({
         id:docref.id,
         number:classnumber,
+        university_id:currentid,
         university:currentdata?.name
     })
     return true  
     } catch (error) {
         return false
     }
+    
+}
+
+
+export async function getClassroom(){
     
 }

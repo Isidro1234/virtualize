@@ -2,63 +2,19 @@ import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
 	return {
-		rules: [
-            {
-                userAgent:'*',
-                allow:'/'
-            },
-             {
-                userAgent:'*',
-                allow:'/services'
-            },
-             {
-                userAgent:'*',
-                allow:'/aboutus'
-            },
-             {
-                userAgent:'*',
-                allow:'/register'
-            },
-             {
-                userAgent:'*',
-                allow:'/login'
-            },
-             {
-                userAgent:'*',
-                allow:'/universities'
-            },
-             {
-                userAgent:'*',
-                disallow:'/user'
-            },
-             {
-                userAgent:'*',
-                disallow:'/lib'
-            },
-             {
-                userAgent:'*',
-                disallow:'/class'
-            },
-             {
-                userAgent:'*',
-                disallow:'/api'
-            },
-             {
-                userAgent:'*',
-                disallow:'/pdf'
-            },
-             {
-                userAgent:'*',
-                disallow:'/actions'
-            },
-             {
-                userAgent:'*',
-                disallow:'/admin'
-            },
-             {
-                userAgent:'*',
-                disallow:'/university'
-            },
-        ]
+		rules: {
+			userAgent: "*",
+			allow: "/",
+			disallow: [
+				"/user",
+				"/lib",
+				"/class",
+				"/api",
+				"/pdf",
+				"/actions",
+				"/admin",
+				"/university",
+			],
+		},
 	};
 }

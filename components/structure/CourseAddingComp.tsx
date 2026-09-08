@@ -107,7 +107,7 @@ export default function AddUser({universityList , courses , professors}:{
     }
 
     // check university
-    if(mainUniversity[0] === secondaryUniversity[0]){
+    if(mainUniversity === secondaryUniversity){
       toaster.create({ title: "Full or partial shared courses must be between two different universities", duration: 5000, type: "error" })
       setLoading(false)
       return
@@ -136,8 +136,8 @@ export default function AddUser({universityList , courses , professors}:{
       photoUrl || '',
       startDate,
       endDate,
-      mainUniversity[0],
-      secondaryUniversity[0],
+      mainUniversity,
+      secondaryUniversity,
       isConnectOnly ,
       selectedDays,
       `${startTime}-${endTime}`
@@ -150,7 +150,6 @@ export default function AddUser({universityList , courses , professors}:{
       toaster.create({ title: "Course creation failed", duration: 5000, type: "error" })
     }
   }
-  console.log(universityList)
 
   return (
     <VStack gap={6} width="100%" maxWidth="800px" margin="0 auto" padding={6} background={'#1d1d1d'} borderRadius={0}>
@@ -238,7 +237,7 @@ export default function AddUser({universityList , courses , professors}:{
 
           <Box mb={4}>
             <CustomSelect
-              onchange={(val: any) => setCourseMode(val)}
+              onchange={(val: any) => setCourseMode(val[0])}
               items={[
                 { label: "Full Shared Course (1 Lead Professor)", value: "full" },
                 { label: "Partial Shared Course (Main + Co-Professor)", value: "partial" },
@@ -252,7 +251,7 @@ export default function AddUser({universityList , courses , professors}:{
           <SimpleGrid columns={{ base: 1, md: courseMode === 'partial' ? 2 : 1 }} gap={4}>
             <Box>
               <CustomSelect
-                onchange={(val: any) => setMainProfessor(val)}
+                onchange={(val: any) => setMainProfessor(val[0])}
                 items={professorItems}
                 title={courseMode === 'partial' ? 'Main Leading Professor' : 'Lead Professor'}
                 placeholder='Select professor'
@@ -265,7 +264,7 @@ export default function AddUser({universityList , courses , professors}:{
             {courseMode === 'partial' && (
               <Box>
                 <CustomSelect
-                  onchange={(val: any) => setCoProfessor(val)}
+                  onchange={(val: any) => setCoProfessor(val[0])}
                   items={professorItems.filter((p: any) => p.value !== mainProfessor)}
                   title='Secondary / Co-Professor'
                   placeholder='Select co-professor'
@@ -284,7 +283,7 @@ export default function AddUser({universityList , courses , professors}:{
           <SimpleGrid columns={{ base: 1, md: isConnectOnly ? 1 : 2 }} gap={4} mb={4}>
             <Box>
               <CustomSelect
-                onchange={(val: any) => setMainUniversity(val)}
+                onchange={(val: any) => setMainUniversity(val[0])}
                 items={universityList}
                 title='Main University'
                 placeholder='Select main uni'
@@ -298,7 +297,7 @@ export default function AddUser({universityList , courses , professors}:{
               <>
                 <Box>
                   <CustomSelect
-                    onchange={(val: any) => setSecondaryUniversity(val)}
+                    onchange={(val: any) => setSecondaryUniversity(val[0])}
                     items={universityList}
                     title='Secondary University'
                     placeholder='Select secondary uni'

@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 import path from "path";
 
 
-  const securityHeaders = [
+const securityHeaders = [
   {
     key: 'X-DNS-Prefetch-Control',
     value: 'on'
@@ -21,7 +21,7 @@ import path from "path";
   },
   {
     key: 'Permissions-Policy',
-    value: 'camera=(), microphone=(), geolocation=()'
+    value: 'camera=(self), microphone=(self), geolocation=()'
   },
   {
     key: 'Content-Security-Policy',
@@ -31,7 +31,8 @@ import path from "path";
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' blob: data: https:",
       "font-src 'self'",
-      `connect-src 'self' https://*.firebaseapp.com https://*.googleapis.com`,
+      "connect-src 'self' https://*.firebaseapp.com https://*.googleapis.com https://*.stream-io-api.com wss://*.stream-io-api.com https://*.stream-io-video.com wss://*.stream-io-video.com https://*.getstream.io wss://*.getstream.io https://njinga-worker.njinga.workers.dev",
+      "media-src 'self' blob:",
       "frame-ancestors 'none'",
     ].join('; ')
   }

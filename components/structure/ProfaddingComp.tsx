@@ -57,8 +57,15 @@ export default function ProfaddingComp() {
         setLoading(true)
         try {
             const url_rs = await store({ image: profphoto, name: profphoto.name, type: profphoto.type })
-            const url = url_rs || null
-            await creatAuthAccountProfessor(profname, null, profemail, url)
+            if(!url_rs){
+                toaster.create({
+                    title:"no photo",
+                    duration:5000,
+                    type:'error'
+                })
+                return
+            }
+            await creatAuthAccountProfessor(profname, null, profemail, url_rs)
             toaster.create({
                 title: "user created",
                 type: "success",
