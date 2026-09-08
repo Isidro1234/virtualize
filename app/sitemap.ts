@@ -3,35 +3,35 @@ import { MetadataRoute } from "next";
 export default function sitemap(): MetadataRoute.Sitemap{
   return[
     {
-      url: 'https://virtualize-bice.vercel.app/',
+      url: 'https://virtualize-bice.vercel.app',
       lastModified: new Date(),
-      changeFrequency:'always',
+      changeFrequency:'monthly',
       priority: 1,
     },{
       url: 'https://virtualize-bice.vercel.app/services',
       lastModified: new Date(),
-      changeFrequency: 'always',
-      priority: 1,
+      changeFrequency: 'yearly',
+      priority: 0.,
     },{
       url: 'https://virtualize-bice.vercel.app/register',
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: 'yearly',
       priority: 1,
     },{
       url: 'https://virtualize-bice.vercel.app/login',
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: 'yearly',
       priority: 1,
     },{
       url: 'https://virtualize-bice.vercel.app/universities',
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: 'yearly',
       priority: 1,
     },
     {
       url: 'https://virtualize-bice.vercel.app/aboutus',
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: 'yearly',
       priority: 1,
     }
   ]
