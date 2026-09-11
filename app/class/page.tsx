@@ -8,7 +8,7 @@ export default async function page() {
   const sessions = await getSessionClassroom()
   return (
     <VStack alignItems={'flex-start'} width={'100%'} padding={10}>
-      <Heading>Sessions</Heading>
+      <Heading color={'white'}>Sessions</Heading>
       {sessions?.map((item , index)=>{return(
         <Box width={350} height={200} position={'relative'} background={'#f6f6f6'} borderRadius={10} padding={10} key={index}>
             {item?.time}

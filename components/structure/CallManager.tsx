@@ -17,6 +17,7 @@ import { Avatar, Box, Button, HStack, Text, VStack } from "@chakra-ui/react"
 import { useStreamContext } from "../../context/StreamVideo"
 import { Icons } from "../../utils/exportIcons"
 import MyUIView from "./MyUIView"
+import { useEffect, useRef, useState } from "react"
 
 export default function CallManager() {
   const { videoClient } = useStreamContext()
@@ -42,33 +43,101 @@ export default function CallManager() {
     </StreamCall>
   )
 }
-
 function CallOverlay() {
   const call = useCall()
   const { useCallCallingState } = useCallStateHooks()
   const callingState = useCallCallingState()
 
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const isPlayingRef = useRef<boolean>(false)
+  const playPromiseRef = useRef<Promise<void> | null>(null)
+
+  const handleRingtone = async (start: boolean) => {
+    if (typeof window === 'undefined') return
+
+    if (start) {
+      if (!audioRef.current) {
+        audioRef.current = new Audio('/ring.mp3')
+        audioRef.current.loop = true
+      }
+
+      if (isPlayingRef.current) return
+
+      isPlayingRef.current = true
+      const playPromise = audioRef.current.play()
+      playPromiseRef.current = playPromise
+
+      try {
+        await playPromise
+      } catch (err) {
+        // AbortError just means pause() interrupted us — not a real error
+        if ((err as DOMException)?.name !== 'AbortError') {
+          console.error('Audio playback failed:', err)
+        }
+        isPlayingRef.current = false
+      } finally {
+        playPromiseRef.current = null
+      }
+    } else {
+      const audio = audioRef.current
+      if (!audio) return
+
+      // Wait for any in-flight play() to settle before pausing,
+      // so we never pause mid-request
+      if (playPromiseRef.current) {
+        try {
+          await playPromiseRef.current
+        } catch {
+          // ignore — already handled above
+        }
+      }
+
+      audio.pause()
+      audio.currentTime = 0
+      audioRef.current = null
+      isPlayingRef.current = false
+    }
+  }
+
+  useEffect(() => {
+    const activeRingingStates = [CallingState.RINGING, CallingState.JOINING]
+
+    if (!activeRingingStates.includes(callingState)) {
+      handleRingtone(false)
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current = null
+        isPlayingRef.current = false
+      }
+    }
+  }, [callingState])
+
   if (!call) return null
 
   if (callingState === CallingState.JOINED) {
-    return <ActiveCallPanel />
+    return <ActiveCallPanel onringstate={handleRingtone} />
   }
 
-  if (
-    callingState === CallingState.RINGING ||
-    callingState === CallingState.JOINING
-  ) {
-    return call.isCreatedByMe ? <OutgoingCallPanel /> : <IncomingCallPanel />
+  if (callingState === CallingState.RINGING || callingState === CallingState.JOINING) {
+    return call.isCreatedByMe
+      ? <OutgoingCallPanel onringstate={handleRingtone} />
+      : <IncomingCallPanel onringstate={handleRingtone} />
   }
+
   return null
 }
 
-function OutgoingCallPanel() {
+function OutgoingCallPanel({onringstate}:{onringstate:Function}) {
   const call = useCall()
   const { useCallMembers } = useCallStateHooks()
   const members = useCallMembers()
   const callee = members?.find((m) => m.user.id !== call?.currentUserId)
-
+  useEffect(()=>{
+    onringstate(true)
+  }, [])
   return (
     <Overlay>
       <VStack gap={4}>
@@ -99,12 +168,14 @@ function OutgoingCallPanel() {
   )
 }
 
-function IncomingCallPanel() {
+function IncomingCallPanel({onringstate}:{onringstate:Function}) {
   const call = useCall()
   const { useCallMembers } = useCallStateHooks()
   const members = useCallMembers()
   const caller = members?.find((m) => m.user.id !== call?.currentUserId)
-
+   useEffect(()=>{
+    onringstate(true)
+  }, [])
   return (
     <Overlay>
       <VStack gap={4}>
@@ -143,7 +214,10 @@ function IncomingCallPanel() {
   )
 }
 
-function ActiveCallPanel() {
+function ActiveCallPanel({onringstate}:{onringstate:Function}) {
+  useEffect(()=>{
+    onringstate(false)
+  }, [])
   return (
     <Box
       position="fixed"
