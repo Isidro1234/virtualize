@@ -129,7 +129,7 @@ export async function creatAuthAccount(
         name: username,
       },
     ])
-
+  
     return true
   } catch (error) {
     console.error("Error creating auth account or saving user record:", error)
@@ -352,11 +352,17 @@ async function getProfCached(uid: string){
 }
 
 export async function getCurrentId(){
-    const cookie = await cookies()
+    try {
+       const cookie = await cookies()
     const token = cookie.get('session_virtualise')?.value
     if(!token) return null;
     const uid = await adminAuth.verifySessionCookie(token)
-    return uid.uid
+    return uid.uid 
+    } catch (error) {
+        await deleteSession()
+        return null
+    }
+    
 }
 
 async function getUnidata(){
@@ -702,7 +708,9 @@ export async function addLikes(uid:string){
 }
 
 export async function getUniversityList(){
-    const currentid = await getCurrentId();
+
+     const currentid = await getCurrentId();
+   
     if(!currentid) return [];
     const docuni = await admindb.collection('users').doc(currentid).get()
     if(!docuni.exists) return [];
@@ -716,31 +724,43 @@ export async function getUniversityList(){
 }
 
 export async function getcurrentuserdata(uid:string | null){
+
     if(!uid) return null;
     const docref = await admindb.collection('users').doc(uid).get()
     if(!docref.exists) return null;
     const data = docref.data()
-    return data
+    return serializeFirestore(data)
 }
 
 
 export async function addclassroom(classnumber:number){
     try {
-      const currentid = await getCurrentId()
-    const currentdata = await getcurrentuserdata(currentid)
+    const currentid = await getCurrentId()
+    const currentdata = await getcurrentuserdata(currentid || null)
     if(!currentdata) return null;
-    const password = classnumber + "#" + currentdata?.name
+    const password = classnumber + "#" + currentdata?.name.replaceAll(" ", '')
     const email = "classroom" + classnumber + "@" + currentdata?.name.replaceAll(" ", '') + ".edu"
-    const user = await adminAuth.createUser({email , password})
-    const docref = admindb.collection('classrooms').doc(user.uid)
-    const checkexist = await admindb.collection('classrooms').where("number", "==", classnumber).get();
+
+    const checkexist = await admindb.collection('users').where('role','array-contains',"classroom").where("number", "==", classnumber).get();
     if(!checkexist.empty) return null
+    const user = await adminAuth.createUser({email , password})
+    const docref = admindb.collection('users').doc(user.uid)
     await docref.create({
         id:docref.id,
         number:classnumber,
         university_id:currentid,
-        university:currentdata?.name
+        university:currentdata?.name,
+        role:["classroom"],
+        photo:null,
     })
+    await stream.upsertUsers([
+      {
+        id: docref.id,
+        image: '',
+        name: currentdata?.name  + " " + classnumber,
+      },
+    ])
+    revalidateTag('classroom', 'max')
     return true  
     } catch (error) {
         return false
@@ -749,6 +769,86 @@ export async function addclassroom(classnumber:number){
 }
 
 
-export async function getClassroom(){
-    
+export async function getClassroom(id:any){
+    'use cache'
+    cacheTag(`classroom-${id}`)
+    const docref = await admindb.collection('users').where('role',"array-contains", 'classroom').where('university_id' , "==" , id).get()
+    if(docref.empty) return [];
+    const data = docref.docs.map((d)=>{
+        return d.data()
+    })
+    return serializeFirestore(data)
+}
+
+
+export async function addClassSession({
+  class1,
+  class2,
+  course,
+  time,
+}: {
+  class1: string | null;
+  class2: string | null;
+  course: string;
+  time: string;
+}) {
+ 
+  if (!class1 && !class2) return null;
+
+  const docref = admindb.collection('session').doc();
+
+  if (!class1 || !class2) {
+    const soloClass = class1 ?? class2!; 
+
+    const existingConnection = await admindb
+      .collection('session')
+      .where('type', '==', 'connection')
+      .where('participants', 'array-contains', soloClass)
+      .get();
+
+    if (!existingConnection.empty) return null; 
+
+    await docref.create({
+      id: docref.id,
+      course_id: course,
+      time,
+      type: 'connection',
+      participants: [soloClass],
+    });
+    return true;
+  }
+
+  const sortedPair = [class1, class2].sort(); 
+
+  const existingShared = await admindb
+    .collection('session')
+    .where('participants', 'array-contains-any', sortedPair)
+    .get();
+
+  if (!existingShared.empty) return null; 
+
+  await docref.create({
+    id: docref.id,
+    course_id: course,
+    time,
+    type: 'shared',
+    participants: sortedPair,
+  });
+  return true;
+}
+
+export async function getSessionClassroom(){
+    try {
+        const currenid = await getCurrentId()
+    if(!currenid) return null;
+    const docref = await admindb.collection('session').where("participants","array-contains",currenid).get()
+    if(docref.empty) return null
+    const data = docref.docs.map((d)=>{
+        return d.data()
+    })
+    return serializeFirestore(data) 
+    } catch (error) {
+            return null
+    }
+   
 }

@@ -189,3 +189,9 @@ div .hero::after{
 .conteier-text-box{
   cursor: pointer;
 }
+
+
+.str-video__notification{
+  color:white;
+  background: #00bf63;
+}

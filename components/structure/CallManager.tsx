@@ -8,33 +8,32 @@ import {
   CallingState,
   SpeakerLayout,
   CallControls,
-
-  AcceptCallButton,
-  CancelCallButton,
   StreamTheme,
   ToggleAudioOutputButton,
   ToggleVideoPreviewButton,
 } from "@stream-io/video-react-sdk"
-import { Avatar, Box, HStack, Text, VStack } from "@chakra-ui/react"
+import "@stream-io/video-react-sdk/dist/css/styles.css" // <-- required: StreamTheme only sets CSS variables, this file has the actual rules that consume them
+import { Avatar, Box, Button, HStack, Text, VStack } from "@chakra-ui/react"
 import { useStreamContext } from "../../context/StreamVideo"
+import { Icons } from "../../utils/exportIcons"
+import MyUIView from "./MyUIView"
 
 export default function CallManager() {
   const { videoClient } = useStreamContext()
   const calls = useCalls()
 
-  // Nothing to do until the video client (and therefore <StreamVideo>) exists
   if (!videoClient) return null
 
-  // There could technically be more than one ringing call — we surface the
-  // first one, same approach Stream's own docs use.
-  const ringingCall = calls.find(
-    (c) => c.state.callingState === CallingState.RINGING
-  )
-  const activeCall = calls.find(
-    (c) => c.state.callingState === CallingState.JOINED
+ 
+  const call = calls.find((c) =>
+    [
+      CallingState.RINGING,
+      CallingState.JOINING,
+      CallingState.JOINED,
+      CallingState.RECONNECTING,
+    ].includes(c.state.callingState)
   )
 
-  const call = ringingCall || activeCall
   if (!call) return null
 
   return (
@@ -44,7 +43,6 @@ export default function CallManager() {
   )
 }
 
-// Renders whichever panel matches the current call's state.
 function CallOverlay() {
   const call = useCall()
   const { useCallCallingState } = useCallStateHooks()
@@ -62,11 +60,9 @@ function CallOverlay() {
   ) {
     return call.isCreatedByMe ? <OutgoingCallPanel /> : <IncomingCallPanel />
   }
-
   return null
 }
 
-// ---------- Outgoing (caller sees this while it rings) ----------
 function OutgoingCallPanel() {
   const call = useCall()
   const { useCallMembers } = useCallStateHooks()
@@ -76,25 +72,33 @@ function OutgoingCallPanel() {
   return (
     <Overlay>
       <VStack gap={4}>
-        <Text color="white" fontSize="lg" fontWeight="medium">
-          {callee?.user.name || "Calling..."}
+        <Avatar.Root>
+          <Avatar.Fallback name={callee?.user.name || 'Anonym'}/>
+        </Avatar.Root>
+        <Text color="gray" fontSize="sm">
+          {callee?.user.name || 'Anonym'}
         </Text>
         <Text color="gray.300" fontSize="sm">
           Ringing...
         </Text>
-        <HStack gap={4} mt={4}>
-          <ToggleAudioOutputButton />
-          <ToggleVideoPreviewButton />
-          <CancelCallButton
-            onClick={() => call?.leave({ reject: true, reason: "cancel" })}
-          />
+        <HStack justifyContent={'center'} width={'100%'}>
+          <Button
+           borderRadius={50}
+          background={'red'}
+            onClick={() =>
+              call
+                ?.leave({ reject: true, reason: "cancel" })
+                .catch((err) => console.error("leave() failed:", err))
+            }
+          >
+            <Icons.PhoneCallIcon color="white"/>
+          </Button>
         </HStack>
       </VStack>
     </Overlay>
   )
 }
 
-// ---------- Incoming (callee sees this while it rings) ----------
 function IncomingCallPanel() {
   const call = useCall()
   const { useCallMembers } = useCallStateHooks()
@@ -104,24 +108,41 @@ function IncomingCallPanel() {
   return (
     <Overlay>
       <VStack gap={4}>
-        <Text color="white" fontSize="lg" fontWeight="medium">
-          {caller?.user.name || "Incoming call"}
+        <Avatar.Root>
+          <Avatar.Fallback name={caller?.user.name || 'Anonym'}/>
+        </Avatar.Root>
+        <Text color="gray" fontSize="sm">
+         { caller?.user.name || 'Anonym'}
         </Text>
         <Text color="gray.300" fontSize="sm">
           Incoming call...
         </Text>
-        <HStack gap={4} mt={4}>
-          <CancelCallButton
-            onClick={() => call?.leave({ reject: true, reason: "decline" })}
-          />
-          <AcceptCallButton onClick={() => call?.join()} />
+        <HStack justifyContent={'center'} width={'100%'}>
+          <Button borderRadius={50}
+            background={'green'}
+            onClick={() =>
+              call?.join().catch((err) => console.error("join() failed:", err))
+            }
+          >
+            <Icons.PhoneCallIcon color="white"/>
+          </Button>
+          <Button
+          borderRadius={50}
+          background={'red'}
+            onClick={() =>
+              call
+                ?.leave({ reject: true, reason: "decline" })
+                .catch((err) => console.error("leave() failed:", err))
+            }
+          >
+             <Icons.PhoneIncoming color="white"/>
+          </Button>
         </HStack>
       </VStack>
     </Overlay>
   )
 }
 
-// ---------- Ongoing (joined) call ----------
 function ActiveCallPanel() {
   return (
     <Box
@@ -131,12 +152,14 @@ function ActiveCallPanel() {
       bg="black"
       display="flex"
       flexDirection="column"
-    >
-      <StreamTheme>
-        <Box flex={1} minH={0}>
-          <SpeakerLayout />
+      height="100vh" 
+      width="100vw"  
+    >               
+      <StreamTheme style={{position:'relative', width:'100%', height:'100vh', background:'#1d1d1d'}}>
+        <Box height={'100%'} width={'100%'} position="relative">
+          <MyUIView/>
         </Box>
-        <Box py={3}>
+        <Box zIndex={200} justifyContent={'center'} alignItems={'center'} display={'flex'} width={'100%'} bottom={12} position={'absolute'}>
           <CallControls />
         </Box>
       </StreamTheme>

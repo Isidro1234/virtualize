@@ -10,7 +10,10 @@ const protectedRoutes = ['/user', '/university' , '/admin']
 const roleAlloe: Record<string, string[]> = {
    '/admin':['admin'],
    '/user':['individual'],
-   '/university':['university', 'uni-professor', 'professor']
+   '/university':['university'],
+   '/professor':['uni-professor', 'professor'],
+   '/class':['classroom'],
+   '/student':['student']
 }
 const public_Only = ['/', '/services' , '/universities' , '/aboutus', '/register' , '/login']
 
@@ -42,11 +45,15 @@ function getDashboardRole(role:string):string{
          case 'admin':
             return '/admin'
          case 'professor':
-            return '/university'
+            return '/professor'
          case 'university':
             return '/university'
          case 'uni-professor':
-            return '/university'
+            return '/professor'
+         case 'classroom':
+            return '/class'
+         case 'student':
+            return '/student'
          default:
             return '/user'
       }

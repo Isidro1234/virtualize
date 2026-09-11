@@ -2,10 +2,12 @@
 import { Box, Button, Heading, HStack, Span, Text, VStack } from "@chakra-ui/react";
 import Image from "next/image";
 import { motion } from "motion/react"
+import { useRouter } from "next/navigation";
 
 
 
 export default function HomeCustom(){
+  const router = useRouter()
   return (<VStack gap={0} background={'#1d1d1d'}>
     <motion.div style={{width:"100%"}} initial={{opacity:0}} animate={{opacity:1, }} transition={{duration:1}}>
       <VStack className="hero" gap={0} position={'relative'} alignItems={'flex-start'} backgroundColor={'green'} justifyContent={'center'} width={'100%'} height={'90vh'}>
@@ -17,7 +19,7 @@ export default function HomeCustom(){
               <Text marginTop={4} fontSize={18} minWidth={70} maxWidth={400}  width={'100%'} color={"#e6e6e6e6"}>Connect with students across the globe, share experience,
                 learn from the best Universities
               </Text>
-              <Button minWidth={70} maxWidth={200}  width={'100%'}   marginTop={2} size={"lg"} color={'white'} padding={4} bg={'#00bf63'} borderRadius={50}>Get Started Today</Button>
+              <Button onClick={()=>{router.push('/login')}} minWidth={70} maxWidth={200}  width={'100%'}   marginTop={2} size={"lg"} color={'white'} padding={4} bg={'#00bf63'} borderRadius={50}>Get Started Today</Button>
         </VStack>
       </VStack>
     </motion.div>
