@@ -13,7 +13,8 @@ const roleAlloe: Record<string, string[]> = {
    '/university':['university'],
    '/professor':['uni-professor', 'professor'],
    '/class':['classroom'],
-   '/student':['student']
+   '/student':['student'],
+   '/appearence' : ['appearence']
 }
 const public_Only = ['/', '/services' , '/universities' , '/aboutus', '/register' , '/login']
 
@@ -54,6 +55,8 @@ function getDashboardRole(role:string):string{
             return '/class'
          case 'student':
             return '/student'
+         case 'appearence':
+            return '/appearence'
          default:
             return '/user'
       }

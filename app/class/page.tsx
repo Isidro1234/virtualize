@@ -3,6 +3,7 @@ import React from 'react'
 import { getSessionClassroom } from '../actions/auth'
 import LogoutButton from '../../components/structure/LogoutButton'
 import StarCallButton from '../../components/structure/StarCallButton'
+import SessionShow from '../../components/structure/SessionShow'
 
 export default async function page() {
   const sessions = await getSessionClassroom()
@@ -12,6 +13,7 @@ export default async function page() {
       {sessions?.map((item , index)=>{return(
         <Box width={350} height={200} position={'relative'} background={'#f6f6f6'} borderRadius={10} padding={10} key={index}>
             {item?.time}
+            <SessionShow id={item?.course_id}/>
             <StarCallButton  participants={item?.participants}/>
         </Box>
       )})}

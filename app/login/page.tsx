@@ -101,6 +101,12 @@ export default function Login() {
           <Text  lineHeight={1.1} marginTop={3} textAlign={'center'} color={'gray'} fontSize={10}>Universities and colleges connected in a unprecedente manner</Text>
           <Text  textAlign={'center'} color={'gray'} fontSize={10}>Want to know more about our work? contact us</Text>
           <Text  textAlign={'center'} color={'gray'} fontSize={10}>&copy; Copyright inta <Suspense fallback={null}><Copyright/></Suspense></Text>
+          <Button>Guest Virtualize Social</Button>
+          <Button>Guest Virtualize University</Button>
+          <Button>Guest Virtualize Professor</Button>
+          <Button>Guest Virtualize Appearence</Button>
+          <Button>Guest Virtualize Classroom</Button>
+          <Button>Guest Virtualize Student</Button>
           </VStack>
           <Toaster/>
           <Box opacity={.5} borderRadius={10} zIndex={100} background={'black'}  height={'100%'} width={'100%'} position={'absolute'}></Box>

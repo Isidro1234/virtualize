@@ -4,18 +4,18 @@ import { Icons } from '../../utils/exportIcons'
 
 export default function SibeBarClassroom() {
   return (
-    <VStack justifyContent={'flex-start'} paddingTop={10} alignItems={'center'} borderRadius={20} height={'100%'} width={100} background={'#181a1c'}>
-        <Button>
-            <Text>Classes</Text>
+    <VStack justifyContent={'flex-start'} paddingTop={10} gap={10} alignItems={'center'} borderRadius={20} height={'100%'} width={100} background={'#181a1c'}>
+        <Button className='button-style'>
+            <Icons.SchoolIcon/>
         </Button>
-        <Button>
-            <Text>Sessions</Text>
+        <Button className='button-style'>
+            <Icons.Server/>
         </Button>
-        <Button>
-            <Text>Connections</Text>
+        <Button className='button-style'>
+            <Icons.ContactIcon/>
         </Button>
-        <Button>
-            <Text>Settings</Text>
+        <Button className='button-style'>
+            <Icons.Settings/>
         </Button>
     </VStack>
   )

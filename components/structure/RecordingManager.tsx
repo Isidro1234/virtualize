@@ -19,7 +19,7 @@ export default function RecordingManager() {
         }
   return (
     <div>
-      <Button onClick={Recordings}>recordings</Button>
+      
      
     </div>
   )

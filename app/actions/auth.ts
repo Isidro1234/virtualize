@@ -487,6 +487,14 @@ async function getcoursesCached(uid: string){
     return serializeFirestore(data);
 }
 
+export async function getcoursesCachedById(uid: string){
+    "use cache"
+    cacheTag(`courses-${uid}`)
+    const course = await admindb.collection('courses').doc(uid).get()
+    if(!course.exists) return null
+    const data = course.data()
+    return serializeFirestore(data);
+}
 
 export async function getHubs() {
     "use cache"

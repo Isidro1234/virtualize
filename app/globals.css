@@ -195,3 +195,14 @@ div .hero::after{
   color:white;
   background: #00bf63;
 }
+.button-style{
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #15151ac1;
+  transition: all ease-in-out 300ms;
+}
+.button-style:hover{
+  border-radius: 50%;
+  background-color: #00bf63;
+}

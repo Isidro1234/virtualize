@@ -140,7 +140,8 @@ async function handlelogout(){
                 {label:"University" , value:"university"},
                 {label:"Professor" , value:"professor"},
                 {label:"Student" , value:"student"},
-                {label:"admin agent" , value:"agent"}
+                {label:"admin agent" , value:"agent"},
+                {label:"admin agent" , value:"appearence"}
               ]}
               title='Select user type'
               placeholder='what type of user you want to add?'
