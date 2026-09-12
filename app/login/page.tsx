@@ -93,7 +93,7 @@ export default function Login() {
           </HStack>
           <HStack borderRadius={0} width={'100%'} padding={0}  borderBottomWidth={1.5} borderColor={'gray'}>
             <Icons.Lock width={20} height={20} color='gray'/>
-            <Input onChange={(e)=>{setPassword(e.target.value)}} outline={'none'} color={"white"} border={"none"} placeholder='password'/>
+            <Input type='password' onChange={(e)=>{setPassword(e.target.value)}} outline={'none'} color={"white"} border={"none"} placeholder='password'/>
           </HStack>
           <Text marginTop={2} marginBottom={4} width={'100%'} textAlign={'left'} color={'white'} fontSize={12}>Forgot your password?</Text>
           <Button suppressHydrationWarning onClick={Login} loading={loading} width={'100%'} bg={'#00bf63'}>Log-in</Button>
