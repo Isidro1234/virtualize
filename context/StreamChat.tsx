@@ -1,54 +1,52 @@
-"use client"
-import React, { createContext, useContext, useState, useEffect } from 'react'
-import { StreamVideo, StreamVideoClient } from "@stream-io/video-react-sdk"
-import { deleteSession } from '../app/actions/auth';
+"use client";
 
-const StreamChatContext = createContext<any>({})
+import { createContext, useContext } from "react";
+import { Chat, useCreateChatClient } from "stream-chat-react";
+import { StreamChat } from "stream-chat";
 
-interface StreamChatProps {
+const STREAM_API_KEY = process.env.NEXT_PUBLIC_STREAM_API_KEY || "";
+
+interface StreamChatContextProps {
   children: React.ReactNode;
-  uid: string;
-  token: string;
+  userdata: any | null;
+  uid: string | null;
+  token: string | null;
+}
+interface contextTypes {
+  user: any;
+  client: StreamChat | null;
+}
+const StreamContext = createContext<contextTypes>({ user: null, client: null });
+
+export default function StreamChatContext({ children, token, userdata, uid }: StreamChatContextProps) {
+  if (!token || !userdata || !uid) {
+    return (
+      <StreamContext.Provider value={{ user: userdata, client: null }}>
+        {children}
+      </StreamContext.Provider>
+    );
+  }
+  return (
+    <ConnectedStreamChat token={token} userdata={userdata} uid={uid}>
+      {children}
+    </ConnectedStreamChat>
+  );
 }
 
-export default function StreamChat({ children, uid , token }: StreamChatProps) {
-  const [client, setClient] = useState<StreamVideoClient | null>(null);
-  const apikey = process.env.NEXT_PUBLIC_STREAM_API_KEY || ""
-  useEffect(() => {
-    // Instantiate the heavy SDK class safely on the client environment
-    if(!uid || !token){
-        deleting()
-    }
-    async function deleting(){
-        return await deleteSession()
-    }
-    if(!apikey) return;
-    const streamClient = new StreamVideoClient({
-      apiKey:apikey,
-      user: { id: uid, image: "" },
-      token: token,
-    });
-
-    setClient(streamClient);
-
-    // Clean up connection when component unmounts
-    return () => {
-      streamClient.disconnectUser().catch(err => console.error("Error disconnecting Stream client", err));
-    };
-  }, [uid , token]);
-
-  // Loading state prevents children from rendering before the client initializes
-  if (!client) {
-    return <div>Loading communication networks...</div>; 
-  }
+function ConnectedStreamChat({
+  children, token, userdata, uid,
+}: { children: React.ReactNode; token: string; userdata: any; uid: string }) {
+  const client = useCreateChatClient({
+    apiKey: STREAM_API_KEY,
+    tokenOrProvider: token,
+    userData: { id: uid, name: userdata?.name, image: userdata?.photo },
+  });
 
   return (
-    <StreamChatContext.Provider value={{ setClient, client }}>
-      <StreamVideo client={client}>
-        {children}
-      </StreamVideo>
-    </StreamChatContext.Provider>
-  )
+    <StreamContext.Provider value={{ user: userdata, client }}>
+      {client ? <Chat client={client}>{children}</Chat> : children}
+    </StreamContext.Provider>
+  );
 }
 
-export const useStream = () => useContext(StreamChatContext)
+export const useStreamChatContext = () => useContext(StreamContext);

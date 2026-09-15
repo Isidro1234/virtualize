@@ -2,7 +2,7 @@
 import { cookies } from "next/headers";
 import { adminAuth, admindb } from "../../config/admin-firestore";
 import {StreamClient} from "@stream-io/node-sdk"
-import { cacheTag, revalidateTag } from "next/cache";
+import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { VerifySession } from "../lib/verifySession";
 import { redirect } from "next/navigation";
 import {SignJWT} from 'jose'
@@ -13,11 +13,9 @@ const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET)
 
 const stream = new StreamClient(`${process.env.STREAM_API_KEY}` , `${process.env.STREAM_SECRET}`)
 
-// Recursively converts Firestore Timestamp instances (and Dates, for safety)
-// into plain ISO strings so results are safe to pass from Server -> Client Components.
+
 function serializeFirestore<T>(data: T): T {
     if (data === null || data === undefined) return data
-    // Firestore Timestamp: has toDate() and both _seconds/_nanoseconds fields
     if (typeof (data as any)?.toDate === 'function' && '_seconds' in (data as any)) {
         return (data as any).toDate().toISOString() as unknown as T
     }
@@ -43,7 +41,7 @@ export async function createSession(idToken:string){
     try {
         const userdoc = await admindb.collection('users').doc(decode.uid).get()
         const userdata = userdoc.data()
-        const primaryRole = userdata?.role?.[0] || 'individual';   // ← added ?. before [0]
+        const primaryRole = userdata?.role?.[0] || 'individual'; 
 
         const sessionCookies = await adminAuth.createSessionCookie(idToken , {expiresIn:expiresin})
         
@@ -70,7 +68,7 @@ export async function createSession(idToken:string){
             maxAge:expiresin
         })
     } catch (error:any) {
-        console.error('createSession failed:', error)   // ← added logging so this isn't silent next time
+        console.error('createSession failed:', error)  
         await deleteSession()
         redirect('/')
     }
@@ -99,18 +97,17 @@ export async function creatAuthAccount(
   password: string,
   photo: string | null,
   role: string | null,
-  country: string
+  country: string,
+  more:object | null
 ) {
   try {
     const photourl = photo || ''
     
-    // Create Firebase Auth user
-    const user = await adminAuth.createUser({ email, password, photoURL: photourl })
+    const newpassword = 'test1234@'
+    const user = await adminAuth.createUser({ email, password:newpassword, photoURL: photourl })
     await adminAuth.updateUser(user.uid, { displayName: username })
 
     const uid = user.uid
-
-    // Save user metadata to Firestore
     await admindb.collection('users').doc(uid).set({
       id: uid,
       name: username,
@@ -118,10 +115,11 @@ export async function creatAuthAccount(
       createdAt: new Date(),
       photo: photourl,
       country: country,
-      role: role ? [role] : []
+      role: role ? [role] : [],
+      more: more ?? null
     })
 
-    // Update Stream Chat user profile
+    
     await stream.upsertUsers([
       {
         id: uid,
@@ -159,15 +157,21 @@ export async function createUserAccount(username:string, email:string , uid:stri
      
 }
 
-export async function getStreamToken(uid:string){
-    try {
-      if(!uid) return;
-    const token = stream.generateUserToken({user_id:uid})
-    return token  
-    } catch (error) {
-        return null
-    }
-    
+export async function getStreamToken(uid: string) {
+  if (!uid) return null;
+  try {
+    return await getStreamTokenCached(uid);
+  } catch {
+    return null;
+  }
+}
+
+async function getStreamTokenCached(uid: string) {
+  "use cache";
+  cacheTag(`stream-token-${uid}`);
+  cacheLife("hours");
+  const exp = Math.floor(Date.now() / 1000) + 60 * 60 * 12;
+  return stream.generateUserToken({ user_id: uid, exp });
 }
 
 export async function creatAuthAccountProfessor(username:string , uniname:string | null, 
@@ -284,34 +288,26 @@ export async function uploadDocSeries(url:string , title:string , author:string 
 }
 
 export async function userdata(){
+    const uid = await getCurrentId()
+    if (!uid) return null
     try {
-        const token = await VerifySession();
-        if(!token) return null
-        const docref = await cacheData(token.userId)
-        if(!docref?.exists) return null
-        const user = docref.data()
-        return user  
+        const user = await cacheData(uid)
+        return user ?? null
     } catch (error) {
         return null
     }
-    
 }
+
 export async function redirectRoute(){
+    const uid = await getCurrentId()
+    if (!uid) return {role:null, user:null, uid:null}
     try {
-    const token = await VerifySession();
-    if (!token) return {role:null , user:null, uid:null};
-
-    const docref = await cacheData(token.userId);
-    if (!docref?.exists) return {role:null , user:null, uid:null};
-
-    const user = docref.data();
-    const primaryRole = user?.role?.[0];
-
-    return {role:primaryRole , user , uid:token.userId}
+        const user = await cacheData(uid)
+        if (!user) return {role:null, user:null, uid:null}
+        return {role: user?.role?.[0] ?? null, user, uid}
     } catch (error) {
-        return {role:null , user:null , uid:null}
+        return {role:null, user:null, uid:null}
     }
-    
 }
 
 
@@ -359,7 +355,6 @@ export async function getCurrentId(){
     const uid = await adminAuth.verifySessionCookie(token)
     return uid.uid 
     } catch (error) {
-        await deleteSession()
         return null
     }
     
@@ -859,4 +854,27 @@ export async function getSessionClassroom(){
             return null
     }
    
+}
+
+
+
+
+export async function getAllCeleb(){
+    'use cache'
+    const celeb = await admindb.collection('users').where('role','array-contains', 'appearence').get()
+    if(celeb.empty) return [];
+    const data = celeb.docs.map((d)=>{
+        return d.data()
+    })
+    return serializeFirestore(data) 
+}
+
+export async function getAllUni(){
+    'use cache'
+    const celeb = await admindb.collection('users').where('role','array-contains', 'university').get()
+    if(celeb.empty) return [];
+    const data = celeb.docs.map((d)=>{
+        return d.data()
+    })
+    return serializeFirestore(data) 
 }

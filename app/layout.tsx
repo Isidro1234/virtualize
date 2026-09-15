@@ -12,6 +12,8 @@ import StreamWrapper from "../components/structure/StreamWrapper";
 import { Suspense } from "react";
 import { Spinner, Text, VStack } from "@chakra-ui/react";
 import { EmotionRegistry } from "../components/ui/EmotionRegistry";
+import "stream-chat-react/dist/css/index.css";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

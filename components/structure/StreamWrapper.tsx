@@ -2,6 +2,7 @@ import React from "react";
 import StreamVideoContext from "../../context/StreamVideo";
 import { getSession, getStreamToken } from "../../app/actions/auth";
 import { VerifySession } from "../../app/lib/verifySession";
+import StreamChatContext from "../../context/StreamChat";
 
 
 
@@ -23,8 +24,9 @@ export default async function StreamWrapper({children}:{children:React.ReactNode
     
     return(
         <StreamVideoContext token={token} userdata={user} uid={uid?.userId || null}>
-           
-            {children}
+            <StreamChatContext token={token} userdata={user} uid={uid?.userId || null}>
+                 {children}
+            </StreamChatContext>
         </StreamVideoContext>
     )
 }

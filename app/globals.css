@@ -206,3 +206,37 @@ div .hero::after{
   border-radius: 50%;
   background-color: #00bf63;
 }
+.link-item-btn{
+  background-color: #00bf6300;
+  transition: all ease-in-out 300ms;
+}
+
+.link-item-btn:hover{
+  background-color: #00bf63;
+}
+
+.celeb{
+  transition: all ease-in-out 300ms;
+}
+
+ .celeb:hover{
+  background-color: #010206;
+  color: white;
+  cursor: pointer;
+}
+
+
+.str-chat__channel-list-empty{
+  color: rgb(202, 202, 202);
+  fill: rgb(202, 202, 202)
+}
+.str-chat__channel{
+  flex: 1;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.str-chat__main-panel{
+   border-radius: 20px;
+  overflow: hidden;
+  background-color: #0a0a0a;
+}

@@ -75,6 +75,11 @@ export default function Login() {
     }
     
   }
+  async function autologin(type:string){
+    if(type == 'university'){
+      const credentials = await signInWithEmailAndPassword(auth, email, password);
+    }
+  }
   return (
     <VStack position={
       'relative'

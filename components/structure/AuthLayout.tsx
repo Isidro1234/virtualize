@@ -4,17 +4,11 @@ import SideBar from './SideBar';
 import NavbarLogged from './navbarLogged';
 import SideRight from './SideRight';
 import { getSession } from '../../app/actions/auth';
-import { VerifySession } from '../../app/lib/verifySession';
+
 
 export default async function AuthLayout({children}:{children:React.ReactNode}) {
 
-    const res = await VerifySession()
-    const uid = res?.userId;
-    // No valid role JWT at all — nothing to render, send them to log in
-    // instead of silently returning nothing (this was the blank/"error" page).
-    if(!uid){
-        redirect('/login')
-    }
+  
 
     const docref = await getSession()
     // Role JWT was still valid but the underlying Firebase session cookie

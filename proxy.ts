@@ -12,11 +12,11 @@ const roleAlloe: Record<string, string[]> = {
    '/user':['individual'],
    '/university':['university'],
    '/professor':['uni-professor', 'professor'],
-   '/class':['classroom'],
-   '/student':['student'],
-   '/appearence' : ['appearence']
+   '/classroom':['classroom'],
+   '/appearence': ['appearence']
+   
 }
-const public_Only = ['/', '/services' , '/universities' , '/aboutus', '/register' , '/login']
+const public_Only = ['/', '/services' , '/student' ,'/universities' , '/aboutus', '/register' , '/login']
 
 async function VerifyToken(token:string){
    try {
@@ -52,9 +52,7 @@ function getDashboardRole(role:string):string{
          case 'uni-professor':
             return '/professor'
          case 'classroom':
-            return '/class'
-         case 'student':
-            return '/student'
+            return '/classroom'
          case 'appearence':
             return '/appearence'
          default:

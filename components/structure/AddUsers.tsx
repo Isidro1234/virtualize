@@ -25,6 +25,10 @@ export default function AddUSer() {
   const [pic, setPic] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [country, setCountry] = useState("")
+  const [experience , setExperience] = useState("")
+  const [degree , setDegree] = useState("")
+  const [uni , setUni] = useState("")
+  const [profession , setProfession] = useState("")
   const refphoto = useRef<HTMLInputElement>(null)
    const router = useRouter()
   function handlePic(pic:any){
@@ -89,7 +93,9 @@ export default function AddUSer() {
   }
 
   // 3. Create Account & Save Database Record
-  const success = await creatAuthAccount(name, email, password, imageurl || null, usercat[0], country)
+  const success = await creatAuthAccount(name, email, password, imageurl || null, usercat[0], country,
+    {experience , degree , profession , uni}
+  )
 
   setLoading(false)
 
@@ -99,6 +105,15 @@ export default function AddUSer() {
       duration: 5000,
       type: "success"
     })
+    setEmail('')
+    setCountry('')
+    setPreview(null)
+    setPic(null)
+    setUsercat('')
+    setDegree('')
+    setExperience('')
+    setUni('')
+    setProfession('')
   } else {
     toaster.create({
       title: "Failed to create account in database",
@@ -141,7 +156,7 @@ async function handlelogout(){
                 {label:"Professor" , value:"professor"},
                 {label:"Student" , value:"student"},
                 {label:"admin agent" , value:"agent"},
-                {label:"admin agent" , value:"appearence"}
+                {label:'appearence', value:'appearence'}
               ]}
               title='Select user type'
               placeholder='what type of user you want to add?'
@@ -152,6 +167,7 @@ async function handlelogout(){
             <Box flex="1" minW="180px">
               <Heading fontSize={14} color={COLORS.text} mb={1}>Name</Heading>
               <Input
+                value={name}
                 onChange={(e)=>{setName(e.target.value)}}
                 placeholder={`what is your ${usercat || ''} name`}
                 bg={COLORS.bg}
@@ -166,6 +182,7 @@ async function handlelogout(){
             <Box flex="1" minW="180px">
               <Heading fontSize={14} color={COLORS.text} mb={1}>email</Heading>
               <Input
+                value={email}
                 onChange={(e)=>{setEmail(e.target.value)}}
                 placeholder={`what is your ${usercat || ''} email`}
                 bg={COLORS.bg}
@@ -176,7 +193,58 @@ async function handlelogout(){
                 _focus={{ borderColor: COLORS.accent, boxShadow: `0 0 0 1px ${COLORS.accent}` }}
               />
             </Box>
-
+              {usercat[0] === 'appearence' &&
+              <Box flexWrap={'wrap'} width={'100%'}>
+                <Heading fontSize={14} color={COLORS.text} mb={1}>Profession</Heading>
+                <Input
+                value={profession}
+                onChange={(e)=>{setProfession(e.target.value)}}
+                placeholder={`What is your profession`}
+                bg={COLORS.bg}
+                borderColor={COLORS.border}
+                color={COLORS.text}
+                _placeholder={{ color: COLORS.subtext }}
+                _hover={{ borderColor: COLORS.accent }}
+                _focus={{ borderColor: COLORS.accent, boxShadow: `0 0 0 1px ${COLORS.accent}` }}
+              />
+              <Heading fontSize={14} color={COLORS.text} mb={1}>Degree</Heading>
+              <Input
+                value={degree}
+                onChange={(e)=>{setDegree(e.target.value)}}
+                placeholder={`What is your Degree`}
+                bg={COLORS.bg}
+                borderColor={COLORS.border}
+                color={COLORS.text}
+                _placeholder={{ color: COLORS.subtext }}
+                _hover={{ borderColor: COLORS.accent }}
+                _focus={{ borderColor: COLORS.accent, boxShadow: `0 0 0 1px ${COLORS.accent}` }}
+              />
+              <Heading fontSize={14} color={COLORS.text} mb={1}>Experience</Heading>
+              <Input
+                value={experience}
+                onChange={(e)=>{setExperience(e.target.value)}}
+                placeholder={`How many years of experience`}
+                bg={COLORS.bg}
+                borderColor={COLORS.border}
+                color={COLORS.text}
+                _placeholder={{ color: COLORS.subtext }}
+                _hover={{ borderColor: COLORS.accent }}
+                _focus={{ borderColor: COLORS.accent, boxShadow: `0 0 0 1px ${COLORS.accent}` }}
+              />
+              <Heading fontSize={14} color={COLORS.text} mb={1}>University</Heading>
+              <Input
+                value={uni}
+                onChange={(e)=>{setUni(e.target.value)}}
+                placeholder={`Which university you graduated from?`}
+                bg={COLORS.bg}
+                borderColor={COLORS.border}
+                color={COLORS.text}
+                _placeholder={{ color: COLORS.subtext }}
+                _hover={{ borderColor: COLORS.accent }}
+                _focus={{ borderColor: COLORS.accent, boxShadow: `0 0 0 1px ${COLORS.accent}` }}
+              />
+              </Box>
+              }
             <Box>
               <Heading fontSize={14} color={COLORS.text} mb={1}>Photo</Heading>
               <Input
@@ -200,6 +268,7 @@ async function handlelogout(){
             <Box flex="1" minW="180px">
               <Heading fontSize={14} color={COLORS.text} mb={1}>Country</Heading>
               <Input
+              value={country}
                 onChange={(e)=>{setCountry(e.target.value)}}
                 type='text'
                 bg={COLORS.bg}
