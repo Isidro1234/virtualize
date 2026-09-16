@@ -24,21 +24,12 @@ const  pathname = usePathname()
                               <Icons.School2Icon width="25px" height="25px" color='white' strokeWidth={1}/> 
                             </Box>
                          </ButtonCustom>
-                          <ButtonCustom link='/university/Hubs'>
-                            <Box className='sibe-cont' padding={4} background={pathname.includes('/Hubs') ? '#00bf63' : 'transparent'} alignItems={'center'} gap={2} display={'flex'}>
-                                <Icons.FlaskRound width="25px" height="25px" color='white' strokeWidth={1}/>
-                            </Box>
-                          </ButtonCustom>
+                          
                           <ButtonCustom link='/university/message'>
                             <Box className='sibe-cont' padding={4} background={pathname.includes('/Hubs') ? '#00bf63' : 'transparent'} alignItems={'center'} gap={2} display={'flex'}>
                                 <Icons.MessageCircle width="25px" height="25px" color='white' strokeWidth={1}/>
                             </Box>
                           </ButtonCustom>
-                       <ButtonCustom link='/university/Debates'>
-                          <Box className='sibe-cont' padding={4} background={pathname.includes('/Debates') ? '#00bf63' : 'transparent'} alignItems={'center'} gap={2} display={'flex'}>
-                            <Icons.VoicemailIcon width="25px" height="25px" color='white' strokeWidth={1}/>
-                            </Box>
-                       </ButtonCustom>
                         
                         
                         </VStack>

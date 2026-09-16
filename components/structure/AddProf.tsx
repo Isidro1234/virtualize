@@ -90,19 +90,9 @@ export default function AddProf({universities, universityList , courses , profes
             element:<ProfaddingComp/>
         },
         {
-            title:"Debates",
-            icon:<Icons.MessageSquare size={22}/>,
-            element:<DebatesaddingComp/>
-        },
-        {
             title:"Hubs",
             icon:<Icons.Share size={22}/>,
             element:<HubAddingComp/>
-        },
-        {
-            title:"Events",
-            icon:<Icons.Text size={22}/>,
-            element:<EventsaddingComp/>
         },
         {
             title:"Session",
