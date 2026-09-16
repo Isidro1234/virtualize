@@ -872,6 +872,7 @@ export async function getAllCeleb(){
 
 export async function getAllUni(){
     'use cache'
+    cacheTag('Alluni')
     const celeb = await admindb.collection('users').where('role','array-contains', 'university').get()
     if(celeb.empty) return [];
     
