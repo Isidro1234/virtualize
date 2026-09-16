@@ -1,10 +1,9 @@
-import { Box, Button, Heading, HStack, Input, Text, VStack } from '@chakra-ui/react'
+import { Box, Heading, HStack, Input, Text, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { Icons } from '../../../utils/exportIcons'
 import AvatarByUid from '../../../components/structure/AvatarByUid'
 import { getAllUni, getCurrentId } from '../../actions/auth'
 import StartMessageButton from '../../../components/structure/StartMessageButton'
-import StarCallButton from '../../../components/structure/StarCallButton'
 import StarCallButtonRelative from '../../../components/structure/StartCallButtonRelative'
 
 export default async  function Calls() {
@@ -19,7 +18,7 @@ export default async  function Calls() {
         <HStack alignItems={'center'}>
             <HStack marginTop={4} background={'#f6f6f6'} padding={1} borderRadius={50}>
                 <Input fontSize={12}  border={'none'} outline={'none'} placeholder='Pesquisar Contactos'/>
-                <Button background={'white'} borderRadius={50} marginTop={0}><Icons.Search color='#1d1d1d' strokeWidth={1}/></Button>
+                <Icons.Search color='#1d1d1d' strokeWidth={1}/>
             </HStack>
             
         </HStack>
