@@ -127,7 +127,7 @@ export async function creatAuthAccount(
         name: username,
       },
     ])
-  
+    revalidateTag('celeb', 'max')
     return true
   } catch (error) {
     console.error("Error creating auth account or saving user record:", error)
@@ -861,6 +861,7 @@ export async function getSessionClassroom(){
 
 export async function getAllCeleb(){
     'use cache'
+    cacheTag(`celeb`);
     const celeb = await admindb.collection('users').where('role','array-contains', 'appearence').get()
     if(celeb.empty) return [];
     const data = celeb.docs.map((d)=>{
@@ -873,6 +874,7 @@ export async function getAllUni(){
     'use cache'
     const celeb = await admindb.collection('users').where('role','array-contains', 'university').get()
     if(celeb.empty) return [];
+    
     const data = celeb.docs.map((d)=>{
         return d.data()
     })
