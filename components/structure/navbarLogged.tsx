@@ -12,9 +12,6 @@ export default async function NavbarLogged({user}:{user:any}) {
    <HStack className={'nav-bar'} padding={4} background={'#17191a'} width={'100%'}  borderBottomWidth={0} >
       <Logo style={{scale:3, marginLeft:25, marginRight:45, cursor:"pointer"}} height="50px" width="50px"/>
       <HStack gap={4} flex={1} justifyContent={'flex-end'} paddingRight={5} >
-          <Button _hover={{background:'#00bf63'}} borderRadius= {50} border={'none'} variant={'outline'}><Icons.Search strokeWidth={1} color='white'/></Button>
-          <Button _hover={{background:'#00bf63'}} borderRadius= {50} border={'none'}  variant={'outline'}><Icons.Bell strokeWidth={1} color='white'/></Button>
-          <Button _hover={{background:'#00bf63'}} borderRadius= {50} border={'none'}  variant={'outline'}><Icons.MessageCircle strokeWidth={1} color='white'/></Button>
           <Link href={'/user/settings'} ><Button _hover={{background:'#00bf63'}} borderRadius= {50} border={'none'} variant={'outline'}><Icons.SettingsIcon strokeWidth={1} color='white'/></Button></Link>
       </HStack>
        <Text></Text>
