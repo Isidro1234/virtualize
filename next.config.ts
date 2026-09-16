@@ -60,7 +60,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-
+async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: securityHeaders,
+      },
+    ];
+  },
   webpack(config) {
     const fileLoaderRule = config.module.rules.find((rule: any) =>
       rule.test?.test?.('.svg')
