@@ -32,7 +32,7 @@ export default async  function Calls() {
                        
                 </VStack>
                 <HStack>
-                    <StartMessageButton route='/appearence/message' participants={[uid , item?.id]} uid={uid}/>
+                    <StartMessageButton route={'/appearence/message'} participants={[uid , item?.id]} uid={uid}/>
                     <StarCallButtonRelative participants={[uid , item?.id]}/>
                 </HStack>
                 
