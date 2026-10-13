@@ -1,32 +1,26 @@
-import React, { useEffect } from 'react'
 import {VStack , HStack , Box, Heading, Avatar, Text , Button, Input} from "@chakra-ui/react"
 import {Icons} from "../../utils/exportIcons"
-import { getComment, getUserAvatarByUid } from '../../app/actions/auth'
-import Image from 'next/image'
 import { CustomCarousel } from './CarousellCustom'
-import CustomComent from './CustomComent'
-import AvatarByUid from './AvatarByUid'
 import LikeButton from './LikeButton'
-import CommentsList from './CommentList'
 import CommentsSection from './CommentList'
+import { getUserById } from "../../app/lib/dal"
 
 export default async function PostCard({media, likes , commentnumber, user_id , text, id}:{
   media:any , user_id:string , text:string , id:string , commentnumber:number, likes:number
 }){
-    const userAvatar = await getUserAvatarByUid(user_id)
-    const {comments, nextCursor, hasMore} = await getComment(id)
+    const userAvatar = await getUserById(user_id)
     return(
         <VStack gap={5} minWidth={700} width={'100%'} borderRadius={20} background={'#17191a'} borderWidth={0} padding={0} alignItems={'flex-start'}>
         
                         <HStack alignItems={'center'} width={'100%'} padding={8} paddingBottom={0}>
                           <Avatar.Root >
-                            <Avatar.Fallback name={userAvatar?.name}/>
-                            {userAvatar?.image &&
-                            <Avatar.Image src={userAvatar.image}/>
+                            <Avatar.Fallback name={userAvatar?.username}/>
+                            {userAvatar?.photo &&
+                            <Avatar.Image src={userAvatar.photo}/>
                             }
                           </Avatar.Root>
                           <Box flex={1}>
-                            <Heading fontSize={14} color={'white'}>{userAvatar?.name}</Heading>
+                            <Heading fontSize={14} color={'white'}>{userAvatar?.username}</Heading>
                             <Text marginTop={-1} color={'gray'} fontSize={10}>{userAvatar?.role}</Text>
                           </Box>
                           <Button borderRadius={50} background={"transparent"}>
@@ -56,7 +50,7 @@ export default async function PostCard({media, likes , commentnumber, user_id , 
                         </HStack>
 
                         <VStack width={'100%'} alignItems={'flex-start'} borderColor={'#1d1d1d'} borderTopWidth={1} marginTop={2}  paddingTop={4}>
-                          <CommentsSection useravatar={userAvatar} postId={id} initialComments={comments} initialCursor={nextCursor} initialHasMore={hasMore}/>
+                         {/* <CommentsSection useravatar={userAvatar} postId={id} initialComments={comments} initialCursor={nextCursor} initialHasMore={hasMore}/>*/}
                         </VStack>
                         
                         </VStack>

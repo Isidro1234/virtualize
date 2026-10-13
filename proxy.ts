@@ -6,14 +6,14 @@ import {jwtVerify} from 'jose'
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET)
 
 
-const protectedRoutes = ['/user', '/university' , '/admin']
+const protectedRoutes = [ '/user' , '/university' , '/admin']
 const roleAlloe: Record<string, string[]> = {
    '/admin':['admin'],
-   '/user':['individual'],
    '/university':['university'],
    '/professor':['uni-professor', 'professor'],
    '/classroom':['classroom'],
-   '/appearence': ['appearence']
+   '/appearence': ['appearence'],
+   '/user': ['individual']
    
 }
 const public_Only = ['/', '/services' , '/student' ,'/universities' , '/aboutus', '/register' , '/login']
@@ -21,7 +21,7 @@ const public_Only = ['/', '/services' , '/student' ,'/universities' , '/aboutus'
 async function VerifyToken(token:string){
    try {
       const {payload} = await jwtVerify(token, JWT_SECRET)
-      return payload as {uid:string , role:string}
+      return payload as {userId:string , role:string[]}
    } catch (error) {
       return null
    }
@@ -34,8 +34,7 @@ function pathMatch(pathname:string , routes:string[]){
    })
 }
 export async  function proxy (request:NextRequest){
-     const token = request.cookies.get('session_virtualise')?.value;
-     const roletoken  = request.cookies.get('user_role')?.value;
+     const token = request.cookies.get('session')?.value;
      const {pathname} = request.nextUrl
      const isPublicOnly = pathMatch(pathname, public_Only)
 
@@ -55,27 +54,29 @@ function getDashboardRole(role:string):string{
             return '/classroom'
          case 'appearence':
             return '/appearence'
+         case 'individual':
+            return '/user'     
          default:
             return '/user'
       }
     }
-     if(matchprotected && (!token || !roletoken)){
+     if(matchprotected && (!token)){
         const logurl = new URL('/login', request.url);
         logurl.searchParams.set("callback", pathname);
         return NextResponse.redirect(logurl)
      }
 
-     if(roletoken){
-      const decoderole = await VerifyToken(roletoken);
+     if(token){
+      const decoderole = await VerifyToken(token);
       if(decoderole){
          if(isPublicOnly){
-            const target = getDashboardRole(decoderole.role);
+            const target = getDashboardRole(decoderole.role[0]);
             return NextResponse.redirect(new URL(target , request.url))
          }
          if(matchprotected){
    const allowroutes = roleAlloe[matchprotected];
-   if(!allowroutes.includes(decoderole.role)){
-      const fallbacktoauthorized = getDashboardRole(decoderole.role)
+   if(!allowroutes.includes(decoderole.role[0])){
+      const fallbacktoauthorized = getDashboardRole(decoderole.role[0])
       return NextResponse.redirect(new URL(fallbacktoauthorized, request.url))
    }
 }

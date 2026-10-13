@@ -3,7 +3,6 @@ import { Box, Button, HStack, IconButton, Image, Input, Text, Textarea, VStack, 
 import React, { useRef, useState } from "react"
 import { Icons } from "../../utils/exportIcons"
 import { store } from "../../utils/storemedia"
-import { postText } from "../../app/actions/auth"
 import { Toaster, toaster } from "../ui/toaster"
 
 type MediaItem = { file: File; url: string; type: "image" | "video" }
@@ -42,7 +41,7 @@ export const TextPostContent = () => {
             return await store({image:url.file , name:url.file.name , type:url.file.type})
         })
         const all = await Promise.all(medias) || []
-        await postText(text , all)
+        //await postText(text , all)
         toaster.create({
                 title:'post submitted',
                 duration:5000,

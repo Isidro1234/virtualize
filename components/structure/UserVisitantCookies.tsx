@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react'
 import DocCard from './DocCard'
-import { Heading, HStack, VStack, Skeleton, SkeletonText, Stack, Box } from '@chakra-ui/react'
-import { getSession, getPosts } from '../../app/actions/auth'
+import { Heading, HStack, VStack, Skeleton} from '@chakra-ui/react'
 import LiveCircleOuter from './LiveCircleOuter'
 import LiveCardOuter from './LiveCardOuter'
 import PostCard from './PostCard'
@@ -34,7 +33,7 @@ function CardListSkeleton() {
 
 // Async Wrapper Component for Posts Feed
 async function PostsFeed() {
-  const posts = await getPosts()
+  const posts:Array<any> = []
 
   if (!posts || posts.length === 0) {
     return null
@@ -42,7 +41,7 @@ async function PostsFeed() {
 
   return (
     <VStack className="post-horizontal" justifyContent="flex-start" width="100%" maxWidth={700} alignItems="flex-start">
-      {posts.map((item, index) => (
+      {posts?.map((item, index) => (
         <PostCard
           key={item?.id || index}
           likes={item?.likes || 0}
@@ -58,10 +57,6 @@ async function PostsFeed() {
 }
 
 export default async function UserVisitantCookies() {
-  const user = await getSession()
-  if (!user) {
-    return null
-  }
 
   return (
     <HStack
@@ -99,10 +94,11 @@ export default async function UserVisitantCookies() {
         <Heading color="#00bf63" marginTop={5} fontSize={18} width="100%">
           Documentaries & Science Series
         </Heading>
-        <Suspense fallback={<CardListSkeleton />}>
+        <Suspense  fallback={<CardListSkeleton />}>
           <DocCard />
         </Suspense>
       </VStack>
+      Hello world
     </HStack>
   )
 }

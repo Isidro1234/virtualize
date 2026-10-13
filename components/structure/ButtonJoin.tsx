@@ -1,6 +1,5 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import { checkIfJoinedHub, joinHub } from '../../app/actions/auth'
 import { Button } from '@chakra-ui/react'
 
 export default function ButtonJoin({uid, id}:{uid:string | null, id:string | null}) {
@@ -8,7 +7,7 @@ export default function ButtonJoin({uid, id}:{uid:string | null, id:string | nul
     useEffect(()=>{
         async function getting(){
             if(!uid || !id) return;
-            const res  = await checkIfJoinedHub(uid , id);
+            const res: any  = ''  // await checkIfJoinedHub(uid , id);
             if(!res?.ismember) {
                 setjoin({ismember:false})
             }
@@ -18,7 +17,7 @@ export default function ButtonJoin({uid, id}:{uid:string | null, id:string | nul
     }, [])
     async function submit(){
         if(!uid || !id) return;
-       const res =  await joinHub(uid, id)
+       const res:any = '' // await joinHub(uid, id)
        setjoin(res)
     }
   return (

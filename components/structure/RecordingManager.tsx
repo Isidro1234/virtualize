@@ -1,7 +1,5 @@
 "use client"
-import { Button } from '@chakra-ui/react'
-import { CallRecordingList, useCalls } from '@stream-io/video-react-sdk'
-import React, { useState } from 'react'
+import {  useCalls } from '@stream-io/video-react-sdk'
 import { useLogicState } from '../../states/useLogicState'
 
 export default function RecordingManager() {

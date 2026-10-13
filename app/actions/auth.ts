@@ -1,883 +1,138 @@
+
 "use server"
-import { cookies } from "next/headers";
-import { adminAuth, admindb } from "../../config/admin-firestore";
+import { FormState, FormStateLog, loginFormat, signupFormat } from "../lib/definitions";
+import bcrypt from 'bcryptjs'
+import { admindb } from "../../config/admin-firestore";
 import {StreamClient} from "@stream-io/node-sdk"
-import { cacheLife, cacheTag, revalidateTag } from "next/cache";
-import { VerifySession } from "../lib/verifySession";
 import { redirect } from "next/navigation";
-import {SignJWT} from 'jose'
-import { FieldValue, Filter } from "firebase-admin/firestore";
-import { CommentItem } from "../../utils/type";
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET)
+import {  createSession, deleteSession, encrypting } from "../lib/sessions";
+import { VerifySession } from "../lib/verifySession";
+import { revalidatePath, revalidateTag, updateTag } from "next/cache";
 
+const API_KEY = process.env.STREAM_API_KEY
+const SECRETE_STREAM = process.env.STREAM_SECRET 
+const streamVideoClient = new StreamClient(`${API_KEY}` ,`${SECRETE_STREAM}` )
 
-const stream = new StreamClient(`${process.env.STREAM_API_KEY}` , `${process.env.STREAM_SECRET}`)
-
-
-function serializeFirestore<T>(data: T): T {
-    if (data === null || data === undefined) return data
-    if (typeof (data as any)?.toDate === 'function' && '_seconds' in (data as any)) {
-        return (data as any).toDate().toISOString() as unknown as T
-    }
-    if (data instanceof Date) {
-        return data.toISOString() as unknown as T
-    }
-    if (Array.isArray(data)) {
-        return data.map((item) => serializeFirestore(item)) as unknown as T
-    }
-    if (typeof data === 'object') {
-        const out: Record<string, any> = {}
-        for (const [key, value] of Object.entries(data as Record<string, any>)) {
-            out[key] = serializeFirestore(value)
-        }
-        return out as T
-    }
-    return data
-}
-
-export async function createSession(idToken:string){
-    const expiresin = 60 * 60 * 24 * 5;
-    const decode = await adminAuth.verifyIdToken(idToken)
-    try {
-        const userdoc = await admindb.collection('users').doc(decode.uid).get()
-        const userdata = userdoc.data()
-        const primaryRole = userdata?.role?.[0] || 'individual'; 
-
-        const sessionCookies = await adminAuth.createSessionCookie(idToken , {expiresIn:expiresin})
-        
-        const roleTaken =  await new SignJWT({uid:decode.uid , role:primaryRole})
-        .setProtectedHeader({alg:'HS256'})
-        .setIssuedAt()
-        .setExpirationTime('5d')
-        .sign(JWT_SECRET)
-
-        const cookie = await cookies()
-        cookie.set('session_virtualise', sessionCookies , {
-          httpOnly:true,
-          secure:true,
-          sameSite:'lax',
-          path:'/' ,
-          maxAge: expiresin 
-        })
-
-        cookie.set('user_role', roleTaken , {
-            httpOnly:true,
-            secure:true,
-            sameSite:'lax',
-            path:'/',
-            maxAge:expiresin
-        })
-    } catch (error:any) {
-        console.error('createSession failed:', error)  
-        await deleteSession()
-        redirect('/')
-    }
-}
-
-export async function deleteSession(){
-    const cookie = await cookies()
-    cookie.delete('session_virtualise')
-    cookie.delete('user_role')
-}
-
-export async function getSession(){
-    const cookie  = await cookies();
-    const token = cookie.get('session_virtualise')?.value
-    if(!token)return null;
-    try {
-        const decode = await adminAuth.verifySessionCookie(token);
-        return await cacheData(decode.uid)
-    } catch (error) {
-        return null
-    }
-}
-export async function creatAuthAccount(
-  username: string,
-  email: string,
-  password: string,
-  photo: string | null,
-  role: string | null,
-  country: string,
-  more:object | null
-) {
-  try {
-    const photourl = photo || ''
-    
-    const newpassword = 'test1234@'
-    const user = await adminAuth.createUser({ email, password:newpassword, photoURL: photourl })
-    await adminAuth.updateUser(user.uid, { displayName: username })
-
-    const uid = user.uid
-    await admindb.collection('users').doc(uid).set({
-      id: uid,
-      name: username,
-      email: email,
-      createdAt: new Date(),
-      photo: photourl,
-      country: country,
-      role: role ? [role] : [],
-      more: more ?? null
-    })
-
-    
-    await stream.upsertUsers([
-      {
-        id: uid,
-        image: photourl,
-        name: username,
-      },
-    ])
-    revalidateTag('celeb', 'max')
-    return true
-  } catch (error) {
-    console.error("Error creating auth account or saving user record:", error)
-    return false
+const dashboardFor = (role?: string) => {
+  switch (role) {
+    case 'admin': return '/admin'
+    case 'professor':
+    case 'uni-professor': return '/professor'
+    case 'university': return '/university'
+    case 'classroom': return '/classroom'
+    case 'appearence': return '/appearence'
+    default: return '/user'
   }
 }
-
-export async function createUserAccount(username:string, email:string , uid:string){
-    try {
-        await admindb.collection('users').doc(uid).create({
-        id:uid,
-        name:username,
-        email:email,
-        createdAt:new Date(),
-        role:["individual"]
-     })
-     await stream.upsertUsers([{
-        id:uid,
-        image:"",
-        name:username,
-     }])
-     return true
-    } catch (error) {
-        console.log(error)
-        return false
-    }
-     
-}
-
-export async function getStreamToken(uid: string) {
-  if (!uid) return null;
-  try {
-    return await getStreamTokenCached(uid);
-  } catch {
-    return null;
-  }
-}
-
-async function getStreamTokenCached(uid: string) {
-  "use cache";
-  cacheTag(`stream-token-${uid}`);
-  cacheLife("hours");
-  const exp = Math.floor(Date.now() / 1000) + 60 * 60 * 12;
-  return stream.generateUserToken({ user_id: uid, exp });
-}
-
-export async function creatAuthAccountProfessor(username:string , uniname:string | null, 
-    emails:string | null , photo:string | null ){
-    try {
-        const cookie = await cookies()
-        const token = cookie.get('session_virtualise')?.value;
-        if(!token) return false;
-        const verify = await adminAuth.verifySessionCookie(token)
-        const uid2 = verify.uid;
-        if(!uid2) return false;
-        const useref = admindb.collection('users').doc(uid2)
-        const photourl = photo || ''
-        const email = emails || username.replaceAll(" ", '') + "@" + uniname + '.edu'
-        const password = 'test1234'
-        const user = await adminAuth.createUser({email, password, photoURL:photourl })
-        await adminAuth.updateUser(user.uid , {displayName:username})
-        const uid = user.uid
-        const check = await useref.get();
-        const uninames = check.exists ? check.data()?.name : null;
-        const finaluniname = uniname || uninames
-        await admindb.collection('users').doc(uid).create({
-            id:uid,
-            name:username,
-            email:email,
-            createdAt:new Date(),
-            photo:photourl,
-            university:finaluniname,
-            university_id:uid2,          // ← fixed: was ""
-            role:['uni-professor']
-        })
-        await stream.upsertUsers([{
-            id:uid,
-            image:photourl,
-            name:username,
-        }])
-        revalidateTag(`professors-${uid2}`, 'max')
-        return true
-    } catch (error) {
-        console.log(error)
-        return false
-    }
-}
-export async function cacheData(user_id: string) {
-  "use cache"; // Enables Next.js App Router caching for this scope
-  cacheTag(`user-${user_id}`); // Assigns a specific tag for target invalidation
-  
-  try {
-    const docref = await admindb.collection('users').doc(user_id).get();
-    if (!docref.exists) {
-      return null;
-    }
-    return serializeFirestore(docref.data())
-  } catch (error) {
-    console.error("Error fetching cached user:", error);
-    return null;
-  }
-}
-
-export async function updateUserPhoto({photo, password, name}: {photo: string | null, password: string | null, name: string | null}) {
-    const cookie = await cookies()
-    const token = cookie.get('session_virtualise')?.value;
-    if(!token) return false;
-    const verify = await adminAuth.verifySessionCookie(token)
-    const uid = verify.uid;
-    if(!uid) return false;
-    if(!name && !photo && !password) return false
-
-    const useref = admindb.collection('users').doc(uid)
-    const updates: Record<string, any> = {}
-    if(name) updates.name = name
-    if(photo) updates.photo = photo
-
-    if(Object.keys(updates).length > 0){
-        updates.updatedAt = new Date()
-        await useref.update(updates)
-    }
-
-    if(password){
-        await adminAuth.updateUser(uid, { password })
-    }
-
-    revalidateTag(`user-${uid}`, 'max')
-    return uid
-}
-
-export async function updatCache(uid:string){
-    revalidateTag(`user-${uid}`, 'max')
-}
-
-
-export async function uploadDocSeries(url:string , title:string , author:string , durantion:string | null ,
-
-){
-    const cookie = await cookies()
-    const token = cookie.get('session_virtualise')?.value;
-    if(!token) return false;
-    const verify = await adminAuth.verifyIdToken(token)
-    const uid = verify.uid;
-    if(!uid) return false;
-    const docref = await admindb.collection('users').doc(uid).get()
-    if(!docref.exists) return
-    const name =  docref.data()?.name || ""
-    await admindb.collection('DocSeries').add({
-        id: uid,
-        video:url,
-        title:title,
-        author:author,
-        durantion:durantion,
-        university:name,
-        createdAt:new Date()
-    })
-    return 
-}
-
-export async function userdata(){
-    const uid = await getCurrentId()
-    if (!uid) return null
-    try {
-        const user = await cacheData(uid)
-        return user ?? null
-    } catch (error) {
-        return null
-    }
-}
-
-export async function redirectRoute(){
-    const uid = await getCurrentId()
-    if (!uid) return {role:null, user:null, uid:null}
-    try {
-        const user = await cacheData(uid)
-        if (!user) return {role:null, user:null, uid:null}
-        return {role: user?.role?.[0] ?? null, user, uid}
-    } catch (error) {
-        return {role:null, user:null, uid:null}
-    }
-}
-
-
-export async function getuniversities(){
-    "use cache"
-    cacheTag('universities-list')
-    const uni = await admindb.collection('users').where("role", "array-contains", "university").get()
-    if(uni.empty) return;
-    const data = uni.docs.map((d)=>{
-        return  {label:d.data()?.name , value:d.data()?.name} 
-    })
-    return serializeFirestore(data)
-
-}
-
-export async function getProf(){
-    const cookie = await cookies()
-    const token = cookie.get('session_virtualise')?.value;
-    if(!token) return;
-    try {
-        const u = await adminAuth.verifySessionCookie(token)
-        return await getProfCached(u.uid)
-    } catch (error) {
-        return redirect('/login')
-    }
-}
-async function getProfCached(uid: string){
-    "use cache"
-    cacheTag(`professors-${uid}`)
-    const uni = await admindb.collection('users').where(
-       "university_id" , "==" , uid
-    ).where("role","array-contains","uni-professor").get()
-    if(uni.empty) return;
-    const data = uni.docs.map((d)=>{
-        return  {label:d.data()?.name , value:d.id} // CHANGED: value was d.data()?.name — now the professor's actual uid
-    })
-    return serializeFirestore(data)
-}
-
-export async function getCurrentId(){
-    try {
-       const cookie = await cookies()
-    const token = cookie.get('session_virtualise')?.value
-    if(!token) return null;
-    const uid = await adminAuth.verifySessionCookie(token)
-    return uid.uid 
-    } catch (error) {
-        return null
-    }
-    
-}
-
-async function getUnidata(){
-    const id =  await getCurrentId()
-    if(!id) return null;
-    return await cacheData(id)
-}
-async function getUniname(){
-    const data =  await getUnidata()
-    if(!data) return null
-    return data?.name
-}
-export async function addCourse(coursename: string,
-    coursemode: string, professor: string[],
-    coursephoto: string,
-    coursestart: string,
-    coursend: string,
-    unimain: string,
-    unisecond: string | null,
-    isconnectOnly:boolean| null,
-    coursedays: string[],
-    coursetime: string,
-) {
-    try {
-        if(unimain === unisecond){
-            return null
-        }
-        const uid = await getCurrentId()
-        if (!uid) return null;
-        const docref = admindb.collection('courses').doc()
-        await docref.create({
-            id: docref.id,
-            coursename,
-            coursemode,
-            start: coursestart,
-            end: coursend,
-            unimain,
-            unisecond,
-            isconnectOnly,
-            professor_ids: professor,
-            university_id:uid,
-            photo: coursephoto,
-            days: coursedays,
-            time: coursetime,
-            createdAt: new Date()
-        })
-        revalidateTag(`courses-${uid}`, 'max')
-        return true
-    } catch (error:any) {
-        console.log(error?.message)
-        return null
-    }
-}
-
-
-
-export async function addHubs(hubname:string, member_limit:number , allowed_entry_to:string,
-    hubphoto:string,
- ){
-    try {
-      const uid = await getCurrentId()
-    if(!uid) return null;
-    const docref = admindb.collection('users').doc(uid).collection('hubs').doc()
-    const uniname = await getUniname() || null
-    await docref.create({
-        id:docref.id,
-        hubname,
-        member_limit,
-        permission:allowed_entry_to,
-        photo:hubphoto,
-        previousuid:uid,
-        members:0,
-        university:uniname,
-        createdAt:new Date()
-    })
-    revalidateTag('hubs-list', 'max')
-    return true  
-    } catch (error) {
-       return null 
-    } 
-    
-}
-
-export async function addEvent(Eventname:string, max_limit:number , allowed_entry_to:string ,
-     type:string, eventphoto:string  , eventdescription:string, eventlocation:string | null){
-    try {
-      const uid = await getCurrentId()
-    if(!uid) return null;
-    const docref = admindb.collection('users').doc(uid).collection('events').doc()
-     const uniname = await getUniname() || null
-    await docref.create({
-        Eventname,
-        max_limit,
-        permission:allowed_entry_to,
-        type,
-        university:uniname,
-        location:eventlocation,
-        description:eventdescription,
-        photo:eventphoto,
-        createdAt:new Date()
-    })
-    return true  
-    } catch (error) {
-       return null 
-    }
-    
-}
-
-export async function getcourses(){
-    const uid = await getCurrentId()
-    if(!uid) return
-    return await getcoursesCached(uid) 
-}
-async function getcoursesCached(uid: string){
-    "use cache"
-    cacheTag(`courses-${uid}`)
-    const course = await admindb.collection('courses').where("university_id", "==", uid).get()
-    if(course.empty) return null
-    const data = course.docs.map((c)=>{
-        return c.data()
-    }) || []
-    return serializeFirestore(data);
-}
-
-export async function getcoursesCachedById(uid: string){
-    "use cache"
-    cacheTag(`courses-${uid}`)
-    const course = await admindb.collection('courses').doc(uid).get()
-    if(!course.exists) return null
-    const data = course.data()
-    return serializeFirestore(data);
-}
-
-export async function getHubs() {
-    "use cache"
-    cacheTag('hubs-list')
-    const docref = await admindb.collection('users').where('role', 'array-contains', 'university').get()
-    if (docref.empty) return [];
-
-    const hubscrapping = docref.docs.map(async (d) => {
-        const dort = await admindb.collection('users').doc(d.id).collection('hubs').get()
-        if (dort.empty) return [];
-        return dort.docs.map((t) => t.data())
+export async function signup( state:FormState , formData:FormData):Promise<FormState> {
+    const validateData = signupFormat.safeParse({
+        name: formData.get('name') || '',
+        email: formData.get('email') || '',
+        password: formData.get('password') || ''
     })
 
-    const results = await Promise.all(hubscrapping)
-    return serializeFirestore(results.flat())
-}
-
-
-export async function joinHub(uid:string, id:string){
-    const currentid = await getCurrentId()
-    if(!currentid) return {ismember:false};
-    const docref = admindb.collection('users').doc(uid).collection('hubs').doc(id)
-    const datac = await docref.get()
-    if(!datac.exists) return {ismember:false}
-    const check = await docref.collection('members').where('user_id', "==", currentid).get()
-    if(!check.empty){
-        const member_new_number2 = datac.data()?.members - 1
-        await docref.update({
-                members: member_new_number2
-            })
-            revalidateTag('hubs-list', 'max')
-            revalidateTag(`hub-membership-${currentid}-${id}`, 'max')
-            return {ismember:true}
-    };
-    const idt =   docref.collection('members').doc()
-    await idt.create({
-        id:idt.id,
-        user_id:currentid,
-        createAt:new Date()
-    })
-   const member_new_number = datac.data()?.members + 1
-   await docref.update({
-        members: member_new_number
-    })
-    revalidateTag('hubs-list', 'max')
-    revalidateTag(`hub-membership-${currentid}-${id}`, 'max')
-    return {ismember:true}
-}
-
-export async function checkIfJoinedHub(uid:string, id:string){
-    const currentid = await getCurrentId()
-    if(!currentid) return {ismember:false};
-    return await checkIfJoinedHubCached(uid, id, currentid)
-}
-async function checkIfJoinedHubCached(uid: string, id: string, currentid: string){
-    "use cache"
-    cacheTag(`hub-membership-${currentid}-${id}`)
-    const docref = admindb.collection('users').doc(uid).collection('hubs').doc(id)
-    const datac = await docref.get()
-    if(!datac.exists) return {ismember:false}
-    const check = await docref.collection('members').where('user_id', "==", currentid).get()
-    if(!check.empty){
-            return {ismember:true}
-    };
-    return {ismember:false}
-}
-
-
-export async function postVideo(video:string, title:string , tag:string | null, description:string | null){
-  const uid = await getCurrentId();
-  if(!uid) return null;
-  const docref = admindb.collection('Post').doc()
-  const post = {
-    id:docref.id,
-    user_id:uid,
-    media:[video],
-    title,
-    tag,
-    description,
-    createdAt:new Date()
-  }
-  await docref.create(post)
-  revalidateTag('posts', 'max')
-  return serializeFirestore(post)
-}
-export async function postText(text:string | null , media:any){
-    const uid = await getCurrentId();
-  if(!uid) return null;
-  const docref = admindb.collection('Post').doc()
-  const post = {
-    id:docref.id,
-    user_id:uid,
-    text,
-    media,
-    createdAt:new Date()
-  }
-  await docref.create(post)
-  revalidateTag('posts', 'max')
-  return serializeFirestore(post)
-    
-}
-
-export async function getUserAvatarByUid(uid:string){
-    "use cache"
-    cacheTag(`user-${uid}`)
-    const docref = await admindb.collection('users').doc(uid).get()
-    if(!docref.exists)return
-    return serializeFirestore({name:docref.data()?.name , image:docref.data()?.photo , role:docref.data()?.role[0]})
-}
-
-export async function getCurrentUserAvatar(){
-    const uid = await getCurrentId()
-    if(!uid) return null
-    const avatar = await getUserAvatarByUid(uid)
-    return avatar ? { ...avatar, uid } : null
-}
-
-export async function getPosts(){
-  "use cache"
-  cacheTag('posts')
-  const docref = await admindb.collection('Post').orderBy('createdAt', 'desc').get()
-  if(docref.empty) return []
-  const posts = docref.docs.map((d)=> d.data())
-  const uids = [...new Set(posts.map((p: any) => p.user_id))]
-  const entries = await Promise.all(uids.map(async (uid) => [uid, await getUserAvatarByUid(uid)] as const))
-  const avatarByUid = Object.fromEntries(entries)
-  return serializeFirestore(posts.map((p: any) => ({ ...p, author: avatarByUid[p.user_id] })))
-}
-
-export async function addComment(uid:string , comment:string){
-    const currentUser = await getCurrentId()
-    if(!currentUser) return null
-    const postRef = admindb.collection('Post').doc(uid)
-    const commentRef = postRef.collection('comments').doc()
-    const current = (await postRef.get()).data()?.comment_number || 0
-    const newComment = {
-        id: commentRef.id,
-        comment,
-        sender_id: currentUser,
-        createdAt: new Date()
-    }
-    await postRef.update({ comment_number: current + 1 })
-    await commentRef.create(newComment)
-    revalidateTag(`comments-${uid}`, 'max')
-    revalidateTag('posts', 'max')
-
-    const avatar = await getUserAvatarByUid(currentUser)
-    return serializeFirestore({
-        ...newComment,
-        sender_name: avatar?.name ?? null,
-        sender_image: avatar?.image ?? null,
-        sender_role: avatar?.role ?? null
-    })
-}
-const COMMENTS_PAGE_SIZE = 2
-
-
-export async function getComment(
-    postId: string,
-    cursor?: string | null
-): Promise<{ comments: CommentItem[]; nextCursor: string | null; hasMore: boolean }> {
-    "use cache"
-    cacheTag(`comments-${postId}`)
-
-    let query = admindb.collection('Post').doc(postId).collection('comments')
-        .orderBy('createdAt', 'desc')
-        .limit(COMMENTS_PAGE_SIZE + 1)
-
-    if (cursor) {
-        query = query.startAfter(new Date(cursor))
-    }
-
-    const snap = await query.get()
-    if (snap.empty) return { comments: [], nextCursor: null, hasMore: false }
-
-    const docs = snap.docs
-    const hasMore = docs.length > COMMENTS_PAGE_SIZE
-    const pageDocs = hasMore ? docs.slice(0, COMMENTS_PAGE_SIZE) : docs
-
-    const comments: CommentItem[] = await Promise.all(pageDocs.map(async (d) => {
-        const raw = serializeFirestore(d.data())
-        const avatar = await getUserAvatarByUid(raw.sender_id)
+    if(!validateData.success){
         return {
-            id: raw.id,
-            comment: raw.comment,
-            sender_id: raw.sender_id,
-            sender_name: avatar?.name ?? null,
-            sender_image: avatar?.image ?? null,
-            sender_role: avatar?.role ?? null
+            errors: validateData.error.flatten().fieldErrors,
         }
-    }))
-
-    const lastDoc = pageDocs[pageDocs.length - 1]
-    const nextCursor = hasMore ? lastDoc.data().createdAt.toDate().toISOString() : null
-
-    return { comments, nextCursor, hasMore }
-}
-export async function addLikes(uid:string){
-    const currentUser = await getCurrentId()
-    if(!currentUser) return null
-    const docref = admindb.collection('Post').doc(uid)
-    const likeRef = docref.collection('likes').doc(currentUser)
-    const check = await likeRef.get()
-
-    if(check.exists){
-        await docref.update({ likes: FieldValue.increment(-1) }) // CHANGED: atomic, no read-then-write race
-        await likeRef.delete()
-        revalidateTag('posts', 'max') // NEW
-        return { liked: false }
     }
 
-    await docref.update({ likes: FieldValue.increment(1) }) // CHANGED
-    await likeRef.create({
-        sender_id: currentUser, // CHANGED: was docref.id — the post's own id, not the user's
-        createdAt: new Date()
+    const {name , email , password} = validateData.data
+    const encrypt = bcrypt.hashSync(password , 10);
+    const userinfo = {
+        username:name,
+        email,
+        password:encrypt,
+        role:['individual']
+    }
+    const userid = await createUser(userinfo);
+    if(!userid.success) return;
+    const jwt_session = await encrypting({role:userid.role , user_id:userid.userid })
+    if(!jwt_session) return;
+    await createSession(jwt_session)   
+    redirect(dashboardFor("individual")) 
+}
+
+export async function login(state:FormStateLog, formData:FormData){
+    const validate = loginFormat.safeParse({
+        email: formData.get('email') || '',
+        password: formData.get('password') || ''
     })
-    revalidateTag('posts', 'max') // NEW
-    return { liked: true }
+
+    if(!validate.success){
+        return {
+           errors: validate.error.flatten().fieldErrors
+        }
+    }
+    const {email , password} = validate.data;
+    const get_user = await admindb.collection('users').where('email', "==" , email).get()
+    if(get_user.empty) return;
+    const userdata = get_user.docs[0].data()
+    const saved_password = userdata.password
+    const check_password =  bcrypt.compareSync(password , saved_password);
+    if(!check_password)return;
+    const jwt_session = await encrypting({role:userdata.role , user_id:userdata.id})
+    if(!jwt_session) return ;
+    const session = await createSession(jwt_session)
+    redirect(dashboardFor(userdata.role?.[0])) 
 }
 
-export async function getUniversityList(){
-
-     const currentid = await getCurrentId();
-   
-    if(!currentid) return [];
-    const docuni = await admindb.collection('users').doc(currentid).get()
-    if(!docuni.exists) return [];
-    const name = docuni.data()?.name
-    const docref = await admindb.collection('users').where("role", "array-contains", "university").get()
-    if(docref.empty) return [];
-    const unis = docref.docs.map((uni) => {
-            return { label: uni.data()?.name, value: uni.data()?.id } // uni.id — the doc snapshot's id, not .data()?.id
-        })
-    return unis
-}
-
-export async function getcurrentuserdata(uid:string | null){
-
-    if(!uid) return null;
-    const docref = await admindb.collection('users').doc(uid).get()
-    if(!docref.exists) return null;
-    const data = docref.data()
-    return serializeFirestore(data)
-}
-
-
-export async function addclassroom(classnumber:number){
+export async function getStream(user_id:any | null){
+    if(!user_id){
+        return {token:null , success:false}
+    }
     try {
-    const currentid = await getCurrentId()
-    const currentdata = await getcurrentuserdata(currentid || null)
-    if(!currentdata) return null;
-    const password = classnumber + "#" + currentdata?.name.replaceAll(" ", '')
-    const email = "classroom" + classnumber + "@" + currentdata?.name.replaceAll(" ", '') + ".edu"
-
-    const checkexist = await admindb.collection('users').where('role','array-contains',"classroom").where("number", "==", classnumber).get();
-    if(!checkexist.empty) return null
-    const user = await adminAuth.createUser({email , password})
-    const docref = admindb.collection('users').doc(user.uid)
-    await docref.create({
-        id:docref.id,
-        number:classnumber,
-        university_id:currentid,
-        university:currentdata?.name,
-        role:["classroom"],
-        photo:null,
-    })
-    await stream.upsertUsers([
-      {
-        id: docref.id,
-        image: '',
-        name: currentdata?.name  + " " + classnumber,
-      },
-    ])
-    revalidateTag('classroom', 'max')
-    return true  
+      const gen_Token = streamVideoClient.generateUserToken({user_id:user_id})
+    return {token:gen_Token, success:true}  
     } catch (error) {
-        return false
+        return {token:null , success:false}
     }
     
 }
+const fail = { userid: null, success: false, role: null } as const;
 
+export async function createUser(userinfo: { username: string; email: string; password: string; role: string[] }) {
+  try {
+    if (!userinfo?.username || !userinfo?.email) return fail;
 
-export async function getClassroom(id:any){
-    'use cache'
-    cacheTag(`classroom-${id}`)
-    const docref = await admindb.collection('users').where('role',"array-contains", 'classroom').where('university_id' , "==" , id).get()
-    if(docref.empty) return [];
-    const data = docref.docs.map((d)=>{
-        return d.data()
-    })
-    return serializeFirestore(data)
-}
+    const users = admindb.collection("users");
+    // Email alone must be unique (login looks users up by email).
+    const exists = await users.where("email", "==", userinfo.email).limit(1).get();
+    if (!exists.empty) return fail;
 
+    const ref = users.doc();
+    await ref.create({ ...userinfo, id: ref.id, createdAt: JSON.stringify(new Date()), photo: null });
 
-export async function addClassSession({
-  class1,
-  class2,
-  course,
-  time,
-}: {
-  class1: string | null;
-  class2: string | null;
-  course: string;
-  time: string;
-}) {
- 
-  if (!class1 && !class2) return null;
+    const stream = new StreamClient(process.env.STREAM_API_KEY!, process.env.STREAM_SECRET!);
+    await stream.upsertUsers([{ id: ref.id, name: userinfo.username }]);
 
-  const docref = admindb.collection('session').doc();
-
-  if (!class1 || !class2) {
-    const soloClass = class1 ?? class2!; 
-
-    const existingConnection = await admindb
-      .collection('session')
-      .where('type', '==', 'connection')
-      .where('participants', 'array-contains', soloClass)
-      .get();
-
-    if (!existingConnection.empty) return null; 
-
-    await docref.create({
-      id: docref.id,
-      course_id: course,
-      time,
-      type: 'connection',
-      participants: [soloClass],
-    });
-    return true;
+    return { userid: ref.id, success: true, role: userinfo.role };
+  } catch {
+    return fail;
   }
-
-  const sortedPair = [class1, class2].sort(); 
-
-  const existingShared = await admindb
-    .collection('session')
-    .where('participants', 'array-contains-any', sortedPair)
-    .get();
-
-  if (!existingShared.empty) return null; 
-
-  await docref.create({
-    id: docref.id,
-    course_id: course,
-    time,
-    type: 'shared',
-    participants: sortedPair,
-  });
-  return true;
+}
+export async function logout(){
+    await deleteSession()
+    redirect('/login')
 }
 
-export async function getSessionClassroom(){
+
+export async function changepic(url:string){
     try {
-        const currenid = await getCurrentId()
-    if(!currenid) return null;
-    const docref = await admindb.collection('session').where("participants","array-contains",currenid).get()
-    if(docref.empty) return null
-    const data = docref.docs.map((d)=>{
-        return d.data()
+        const verify = await VerifySession();
+    if(!verify?.userId) return ;
+    const docref = admindb.collection('users').doc(verify.userId)
+    await docref.update({
+        photo:url
     })
-    return serializeFirestore(data) 
+    const usercheck =  await docref.get()
+    if(!usercheck.exists) return;
+    const user = usercheck.data()
+    const userd : {username:string , role:string[] , photo:any } = {username: user?.username , role:user?.role , photo:user?.photo}
+    updateTag(`user-${verify.userId}`) 
+    return true
     } catch (error) {
-            return null
+        return null
     }
    
-}
-
-
-
-
-export async function getAllCeleb(){
-    'use cache'
-    cacheTag(`celeb`);
-    const celeb = await admindb.collection('users').where('role','array-contains', 'appearence').get()
-    if(celeb.empty) return [];
-    const data = celeb.docs.map((d)=>{
-        return d.data()
-    })
-    return serializeFirestore(data) 
-}
-
-export async function getAllUni(){
-    'use cache'
-    cacheTag('Alluni')
-    const celeb = await admindb.collection('users').where('role','array-contains', 'university').get()
-    if(celeb.empty) return [];
-    
-    const data = celeb.docs.map((d)=>{
-        return d.data()
-    })
-    return serializeFirestore(data) 
 }

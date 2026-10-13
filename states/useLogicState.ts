@@ -1,5 +1,6 @@
 import {create} from 'zustand'
-import { userdata } from '../app/actions/auth'
+import { getUser } from '../app/lib/dal'
+
 
 interface states  {
     classroomSelect:object | null,
@@ -18,7 +19,7 @@ export const useLogicState = create <states>((set , get)=>({
         set({classroomSelect: classroom})
     },
     setUser:async()=>{
-        const user = await userdata()
+        const user = await getUser()
         set({me:user || null})
     },
     setRecordings : async(videos:Array<any>)=>{

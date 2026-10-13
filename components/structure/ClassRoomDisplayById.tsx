@@ -1,8 +1,7 @@
 "use client"
 import { VStack, Spinner } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
-import { getClassroom } from '../../app/actions/auth'
-import ClassSelecting from './ClassSelecting'
+//import { getClassroom } from '../../app/actions/auth'
 import { CustomSelect } from './CustomSelect'
 
 export default function ClassRoomDisplayById({ id , onchange }: { id: string , onchange:Function}) {
@@ -16,12 +15,7 @@ export default function ClassRoomDisplayById({ id , onchange }: { id: string , o
     }
     let cancelled = false
     setLoading(true)
-    getClassroom(id).then((result) => {
-      if (!cancelled) {
-        setClasses(result || null)
-        setLoading(false)
-      }
-    })
+    
     return () => { cancelled = true }
   }, [id])
 

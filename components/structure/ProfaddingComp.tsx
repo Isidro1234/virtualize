@@ -2,7 +2,6 @@ import { Box, Button, Heading, HStack, Input, Text, VStack } from '@chakra-ui/re
 import React, { useRef, useState } from 'react'
 import { Icons } from '../../utils/exportIcons'
 import { store } from '../../utils/storemedia'
-import { creatAuthAccountProfessor } from '../../app/actions/auth'
 import { toaster, Toaster } from '../ui/toaster'
 import Image from 'next/image'
 
@@ -65,7 +64,7 @@ export default function ProfaddingComp() {
                 })
                 return
             }
-            await creatAuthAccountProfessor(profname, null, profemail, url_rs)
+            //await creatAuthAccountProfessor(profname, null, profemail, url_rs)
             toaster.create({
                 title: "user created",
                 type: "success",

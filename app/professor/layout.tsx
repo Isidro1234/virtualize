@@ -5,7 +5,7 @@ import ProfessorCompLayout from '../../components/structure/ProfessorCompLayout'
 export default async function ProfLayout({children}:{children:React.ReactNode}) {
    <Suspense fallback={<Text>loading...</Text>}>
      <ProfessorCompLayout>
-       {children}
+       {children} [sdf]
      </ProfessorCompLayout>
    </Suspense>
   

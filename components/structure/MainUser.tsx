@@ -1,8 +1,6 @@
 import { Avatar, Box, Heading, HStack, Text, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { Icons } from '../../utils/exportIcons'
-import DialogingComp from './DialogingComp'
-import Image from 'next/image'
 
 export default function MainUser({user , schools , catg , children}:{user:any, schools:Array<any> , catg:Array<any>, children:React.ReactNode}) {
   return (

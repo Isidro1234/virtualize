@@ -5,14 +5,15 @@ import Footer from "../components/structure/Footer";
 import Navbar from "../components/structure/navbar";
 import { Provider } from "../components/ui/provider";
 import AuthContextProvider from "../context/useAuthContext";
-import StreamVideoContext from "../context/StreamVideo";
-import { getSession } from "./actions/auth";
-import { VerifySession } from "./lib/verifySession";
 import StreamWrapper from "../components/structure/StreamWrapper";
 import { Suspense } from "react";
 import { Spinner, Text, VStack } from "@chakra-ui/react";
 import { EmotionRegistry } from "../components/ui/EmotionRegistry";
 import "stream-chat-react/dist/css/index.css";
+import { VerifySession } from "./lib/verifySession";
+import { getUserById } from "./lib/dal";
+import MainLayout from "../components/structure/MainLayout";
+
 
 
 const geistSans = Geist({
@@ -71,25 +72,27 @@ export default async function RootLayout({
     >
       <body suppressHydrationWarning suppressContentEditableWarning>    
          <EmotionRegistry>
-        <Provider>
           
-          <AuthContextProvider
-          ><Suspense fallback={<VStack background={'#1d1d1d'} justifyContent={'center'} alignItems={'center'} height={'100vh'} width={'100%'}>
-            <Spinner  color={'#00bf63'} size={'md'}/>
-
+        <Provider>
+          <Suspense fallback={<VStack justifyContent={'center'} alignItems={'center'} height={'100vh'} width={'100vw'}>
+            <Spinner color={'green'}/>
           </VStack>}>
-       
+          <MainLayout >
               <StreamWrapper>
             
                 <Navbar/>
-                {children}
+                
+                  {children}
+              
+                
                 <Footer/>
               </StreamWrapper>
-          </Suspense>
+ 
             
-           
-           </AuthContextProvider>
+        </MainLayout>
+        </Suspense>
         </Provider>
+        
         </EmotionRegistry>
        </body>
     </html>

@@ -1,5 +1,5 @@
 // app/dashboard/loading.tsx
-import { Box, HStack, Skeleton, SkeletonText, VStack } from '@chakra-ui/react'
+import { HStack, Skeleton, SkeletonText, VStack } from '@chakra-ui/react'
 
 export default function Loading() {
   return (

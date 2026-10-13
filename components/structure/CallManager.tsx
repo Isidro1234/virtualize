@@ -6,11 +6,8 @@ import {
   useCallStateHooks,
   StreamCall,
   CallingState,
-  SpeakerLayout,
   CallControls,
   StreamTheme,
-  ToggleAudioOutputButton,
-  ToggleVideoPreviewButton,
 } from "@stream-io/video-react-sdk"
 import "@stream-io/video-react-sdk/dist/css/styles.css" // <-- required: StreamTheme only sets CSS variables, this file has the actual rules that consume them
 import { Avatar, Box, Button, HStack, Text, VStack } from "@chakra-ui/react"

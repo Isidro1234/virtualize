@@ -4,11 +4,11 @@ import Image from "next/image";
 import { motion } from "motion/react"
 import { useRouter } from "next/navigation";
 
-
-
 export default function HomeCustom(){
   const router = useRouter()
-  return (<VStack gap={0} background={'#1d1d1d'}>
+  return (
+  
+  <VStack gap={0} background={'#1d1d1d'}>
     <motion.div style={{width:"100%"}} initial={{opacity:0}} animate={{opacity:1, }} transition={{duration:1}}>
       <VStack className="hero" gap={0} position={'relative'} alignItems={'flex-start'} backgroundColor={'green'} justifyContent={'center'} width={'100%'} height={'90vh'}>
         <Image fill style={{width:"100%", height:"100%", objectFit:"cover", filter:"blur(0px)"}} alt="image-hero" src={'/school.png'} />
@@ -29,7 +29,7 @@ export default function HomeCustom(){
   viewport={{ once: false, amount: 0.2 }} >
           <VStack padding={10} background={'#1d1d1d'} width={'100%'}>
           <Heading color={'#00bf63'}>Our Platform</Heading>
-          <Text color={'gray'} fontSize={12}>help students make best out of college</Text>
+          <Text color={'gray.400'} fontSize={12}>help students make best out of college</Text>
 
           <Box marginTop={0} borderRadius={20}  padding={2} width={'100%'} display={'flex'} justifyContent={'center'}>
             <Image className={'images'} style={{borderRadius:20, minWidth:200 , width:'100%', maxWidth:700, height:'auto'}} height={900}  width={900} alt="image" src={'/v1.png'}/>
@@ -44,7 +44,7 @@ export default function HomeCustom(){
 <HStack className={'Debates'}  justifyContent={'flex-start'} width={'100%'} padding={10} background={'#1f1f1f'}>
         <VStack alignItems={'flex-start'} flex={1} padding={10} paddingBottom={0} minWidth={0}>
           <Heading className="text-title" fontSize={{base: 32, md: 48, lg: 64}} color={'white'}>Live <Span color={'#00bf63'}>Debates</Span> </Heading>
-          <Text color={'gray'} minWidth={70} maxWidth={500} width={'100%'} marginTop={8}>Students can engage in online debate forums, learn, share-experiences,
+          <Text color={'gray.400'} minWidth={70} maxWidth={500} width={'100%'} marginTop={8}>Students can engage in online debate forums, learn, share-experiences,
             and improve on their public speaking abilities.
           </Text>
           <Button borderColor={'#00bf63'} color={'#00bf63'} background={'transparent'} borderWidth={1} borderRadius={50} marginTop={2}>Read more</Button>
@@ -65,7 +65,7 @@ export default function HomeCustom(){
        
         <VStack alignItems={'flex-start'}  padding={10} minWidth={0}>
           <Heading className="text-title" fontSize={{base: 32, md: 48, lg: 64}} color={'#2d2d2d'}>Live <Span color={'#00bf63'}>Tutors</Span> </Heading>
-          <Text color={'gray'} minWidth={70} maxWidth={500} width={'100%'} marginTop={4}>Students, Professors, Self-taught individuals can share their knowledge with 
+          <Text color={'gray.400'} minWidth={70} maxWidth={500} width={'100%'} marginTop={4}>Students, Professors, Self-taught individuals can share their knowledge with 
             the world, teach a variety of materials, to peers, aid in doubts.
           </Text>
           <Button borderColor={'#00bf63'} color={'#00bf63'} background={'transparent'} borderWidth={1} borderRadius={50} marginTop={2}>Read more</Button>
@@ -84,7 +84,7 @@ export default function HomeCustom(){
        
         <VStack alignItems={'flex-start'}  padding={10} paddingBottom={5} flex={1} minWidth={0}>
           <Heading className="text-title" fontSize={{base: 28, md: 36, lg: 48}} minWidth={70} maxWidth={590} width={'100%'} lineHeight={1.2} color={'white'}>Free extra-curriculum  <Span color={'#00bf63'}>Courses</Span> </Heading>
-          <Text color={'gray'} minWidth={70} maxWidth={500} width={'100%'} marginTop={4}>We offer a huge stack of free courses for anyone willing to learn.
+          <Text color={'gray.400'} minWidth={70} maxWidth={500} width={'100%'} marginTop={4}>We offer a huge stack of free courses for anyone willing to learn.
             We will be  working with schools and the education department to 
             turn these courses CE-credited
           </Text>
@@ -122,5 +122,7 @@ export default function HomeCustom(){
    
     
       
-  </VStack>)
+  </VStack>
+ 
+ )
 }

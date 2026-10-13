@@ -4,7 +4,6 @@ import React, { useRef, useState } from 'react'
 import { Icons } from '../../utils/exportIcons'
 import { CustomSelect } from './CustomSelect'
 import { toaster } from '../ui/toaster'
-import { addHubs } from '../../app/actions/auth'
 import { store } from '../../utils/storemedia'
 import Image from 'next/image'
 
@@ -98,7 +97,7 @@ export default function HubAddingComp() {
             return
         }
 
-        const res = await addHubs(hubname, limitNum, allowedEntryTo, photo_url)
+        const res = null //await addHubs(hubname, limitNum, allowedEntryTo, photo_url)
         if (!res) {
             toaster.create({
                 title: 'error in submission',

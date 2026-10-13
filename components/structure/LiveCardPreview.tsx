@@ -1,8 +1,7 @@
 "use client"
-import { Box, VStack } from '@chakra-ui/react'
+import { Box} from '@chakra-ui/react'
 import "@stream-io/video-react-sdk/dist/css/styles.css"
-import { LivestreamLayout, useCall } from '@stream-io/video-react-sdk'
-import React from 'react'
+import {useCall } from '@stream-io/video-react-sdk'
 import { CustomLivestreamView } from './CustomUserViewer'
 
 export default function LiveCardPreview() {

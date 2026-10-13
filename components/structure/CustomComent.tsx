@@ -1,7 +1,7 @@
 "use client"
 import { Box, Button, HStack, Input } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import { addComment } from '../../app/actions/auth'
+//import { addComment } from '../../app/actions/auth'
 import { Icons } from '../../utils/exportIcons'
 
 export default function CustomComent({id}:{id:string}) {
@@ -12,7 +12,7 @@ export default function CustomComent({id}:{id:string}) {
         if(!id || !comment.trim() || isPosting) return
         setIsPosting(true)
         try {
-            await addComment(id, comment.trim())
+            //await addComment(id, comment.trim())
             setComment('') // NEW: was never resetting
         } finally {
             setIsPosting(false)

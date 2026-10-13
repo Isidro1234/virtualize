@@ -1,11 +1,5 @@
 import { HStack, Spinner, Text, VStack } from '@chakra-ui/react'
 import React, { Suspense } from 'react'
-import SibarUser from '../../components/structure/SibarUser'
-import { adminAuth, admindb } from '../../config/admin-firestore'
-import { redirect } from 'next/navigation'
-import { cookies } from 'next/headers'
-import MainUser from '../../components/structure/MainUser'
-import { cacheData, getSession } from '../actions/auth'
 import UniversityLayoutComp from '../../components/structure/UniversityComp'
 import { Metadata } from 'next'
 

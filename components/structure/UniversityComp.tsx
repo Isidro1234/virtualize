@@ -1,11 +1,7 @@
-import { HStack, VStack } from '@chakra-ui/react'
+import { HStack } from '@chakra-ui/react'
 import React from 'react'
 import SibarUser from '../../components/structure/SibarUser'
-import { adminAuth, admindb } from '../../config/admin-firestore'
-import { redirect } from 'next/navigation'
-import { cookies } from 'next/headers'
 import MainUser from '../../components/structure/MainUser'
-import { cacheData, deleteSession, getSession } from '../../app/actions/auth'
 
 export default async function UniversityLayoutComp({children}:{children:React.ReactNode}) {
    const schools=[{
@@ -24,7 +20,7 @@ export default async function UniversityLayoutComp({children}:{children:React.Re
 ]
 
 const catg = ['Live Sessions' , 'Debates' ]
-const docref = await getSession()
+const docref = null // await getSession()
 
     if(!docref){
        return null

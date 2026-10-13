@@ -1,6 +1,5 @@
 "use client"
-import { Button, CloseButton, Drawer, Portal, Text, VStack } from "@chakra-ui/react"
-import Link from "next/link"
+import {  Drawer, Portal } from "@chakra-ui/react"
 import { useRouter } from "next/navigation"
 
 

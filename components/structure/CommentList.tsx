@@ -2,7 +2,7 @@
 import { useState, useTransition } from 'react'
 import { VStack, HStack, Box, Text, Button, Input, Avatar } from '@chakra-ui/react'
 import AvatarDisplay from './AvatarDisplay'
-import { addComment, getComment } from '../../app/actions/auth'
+//import { addComment, getComment } from '../../app/actions/auth'
 import { Icons } from '../../utils/exportIcons'
 import { CommentItem } from '../../utils/type'
 
@@ -28,7 +28,7 @@ export default function CommentsSection({
 
     function loadMore() {
         startTransition(async () => {
-            const result = await getComment(postId, cursor)
+            const result:any = '' //await getComment(postId, cursor)
             setComments((prev) => [...prev, ...result.comments])
             setCursor(result.nextCursor)
             setHasMore(result.hasMore)
@@ -39,7 +39,7 @@ export default function CommentsSection({
         if (!postId || !comment.trim() || isPosting) return
         setIsPosting(true)
         try {
-            const newComment = await addComment(postId, comment.trim())
+            const newComment:any = ''// await addComment(postId, comment.trim())
             if (newComment) {
                 setComments((prev) => [newComment as CommentItem, ...prev])
             }

@@ -1,12 +1,9 @@
 "use client"
-import { Box, Heading, HStack, Input, VStack, Button, Text, SimpleGrid } from '@chakra-ui/react'
-import React, { useMemo, useRef, useState } from 'react'
-import { CustomSelect } from '../../components/structure/CustomSelect'
-import { store } from '../../utils/storemedia'
+import { Input, VStack, Button, Text, SimpleGrid } from '@chakra-ui/react'
+import {  useState } from 'react'
+
 import { toaster, Toaster } from '../../components/ui/toaster'
-import { creatAuthAccount, addCourse, addclassroom } from '../../app/actions/auth'
-import { Icons } from '../../utils/exportIcons'
-import Image from 'next/image'
+
 
 const DAYS_OF_WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
@@ -54,22 +51,7 @@ async function handleclass(){
      setLoading(false)
     return
   }
-  const res = await addclassroom(classnumber);
-  if(!res){
-    setLoading(false)
-    toaster.create({
-    title:'classroom not created',
-    duration:5000,
-    type:'error'
-  })
-    return
-  };
-  toaster.create({
-    title:'classroom created with success',
-    duration:5000,
-    type:'success'
-  })
-  setLoading(false)
+ 
 }
   return (
     <VStack height={'100%'} alignItems={'flex-start'} gap={2} width="100%" maxWidth="800px" margin="0 auto" padding={6} background={'#1d1d1d'} borderRadius={0}>

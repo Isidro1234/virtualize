@@ -1,9 +1,8 @@
 "use client"
-import { Button, Heading, HStack, Input, Text, VStack } from '@chakra-ui/react'
+import { Button, HStack,  Text, VStack } from '@chakra-ui/react'
 
 import Logo from '../../public/logo2.svg'
 import Logo2 from '../../public/logo5.svg'
-import Search from  '../../public/icons/search.svg'
 import {useEffect , useRef , useState} from "react"
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -15,6 +14,7 @@ export default function Navbar() {
   const textref = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const pathname = usePathname()
+
  useEffect(() => {
   if (!navref.current) return;
 

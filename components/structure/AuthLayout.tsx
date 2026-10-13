@@ -1,29 +1,31 @@
+"use server"
 import { redirect } from 'next/navigation'
-import { HStack, VStack } from '@chakra-ui/react';
+import { HStack, Skeleton, VStack } from '@chakra-ui/react';
 import SideBar from './SideBar';
 import NavbarLogged from './navbarLogged';
 import SideRight from './SideRight';
-import { getSession } from '../../app/actions/auth';
+import NavLabel from './NavLabel';
+import { getUser, getUserById, getUserByIdRealtime } from '../../app/lib/dal';
+import { VerifySession } from '../../app/lib/verifySession';
+import { admindb } from '../../config/admin-firestore';
+import { Suspense } from 'react';
 
 
-export default async function AuthLayout({children}:{children:React.ReactNode}) {
-
-  
-
-    const docref = await getSession()
-    // Role JWT was still valid but the underlying Firebase session cookie
-    // wasn't (expired/revoked/out of sync) — same treatment.
-    if(!docref){
-        redirect('/login')
-    }
-    const user = docref
+export default async function AuthLayout({children}:{ children:React.ReactNode}) {
 
       return (
-            <HStack  gap={0} background={'#131313'}  className="post-horizontal"  width={"100%"}       alignItems="flex-start" >
+            <HStack padding={6} paddingBottom={0}  gap={2} background={'#131313'}  className="post-horizontal"  width={"100%"}       alignItems="flex-start" >
             <SideBar/>
             <VStack className="post-horizontal"  width={'100%'}  >
-                <NavbarLogged user={user}/>
-                <HStack className={'scroll-special'} width={'100%'} alignItems={'flex-start'} paddingTop={4} overflowX={'hidden'}  overflowY={'hidden'} >
+              <HStack width={'100%'}>
+                <NavLabel/>
+                
+                  <NavbarLogged/>
+              
+                
+              </HStack>
+                
+                <HStack className={'scroll-special'} width={'100%'} alignItems={'flex-start'} paddingTop={2} overflowX={'hidden'}  overflowY={'hidden'} >
                   <VStack className={'scroll-special'} height={'82vh'} paddingLeft={4} overflowX={'hidden'} overflowY={'auto'} flex={1} marginRight={0}>
                     {children}
                   </VStack>

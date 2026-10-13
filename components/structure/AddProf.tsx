@@ -1,16 +1,12 @@
 "use client"
-import { Box, Button, Heading, HStack, Input, Text, VStack, SimpleGrid } from '@chakra-ui/react'
+import { Box, Button, Heading, HStack, Text, VStack, SimpleGrid } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { store } from '../../utils/storemedia'
-import { creatAuthAccountProfessor } from '../../app/actions/auth'
 import { toaster, Toaster } from '../ui/toaster'
 import { Icons } from '../../utils/exportIcons'
 import { DrawerCustom2 } from './DrawerCustom2'
 import ProfaddingComp from './ProfaddingComp'
-import LiveaddingComp from './LiveAddingComp'
-import DebatesaddingComp from './DebatesAddingComp'
 import HubAddingComp from './HubAddingComp'
-import EventsaddingComp from './EventAddingComp'
 import CourseaddingComp from './CourseAddingComp'
 import DocSeriesaddingComp from './Doc&SeriesAddingComp'
 import { useRouter } from 'next/navigation'
@@ -65,7 +61,7 @@ export default function AddProf({universities, universityList , courses , profes
         try {
             const url = await store({image:photo , type:photo.type , name:photo.name})
             const finalurl = url || null
-            await creatAuthAccountProfessor(name , universities , null , finalurl)
+            //await creatAuthAccountProfessor(name , universities , null , finalurl)
             toaster.create({
                 title:"Professor account created with success",
                 type:"success",

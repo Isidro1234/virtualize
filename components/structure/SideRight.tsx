@@ -1,24 +1,27 @@
 import React from "react"
-import {VStack, Box , Button, Heading, HStack, Text} from "@chakra-ui/react"
-import AvatarInfoCard from "./AvartarInfoCard"
+import {VStack, Box , Heading, HStack, Text} from "@chakra-ui/react"
 import Image from "next/image"
 import LiveCardPreviewOuter from "./LiveCardPreviewOuter"
-import { getHubs } from "../../app/actions/auth"
 import ButtonJoin from "./ButtonJoin"
+import { Icons } from "../../utils/exportIcons"
 
 export default async function SideRight(){
-    const hubs = await  getHubs()
+    const hubs:Array<any> = []
     return(
         <VStack className="post-horizontal"  minWidth={50} borderRadius={20} background={'#17191a'} maxWidth={340} width={'100%'} position={'relative'}  padding={5} paddingTop={5} marginRight={2} marginTop={0} top={0} bottom={0} right={0} left={0} marginLeft={0} justifySelf={'flex-start'}>
-            <Box  position={'relative'} overflow={'hidden'} background={'black'} borderRadius={15} height={250} width={'100%'}>
+            <Box  position={'relative'} overflow={'hidden'} background={'black'} borderRadius={15} height={220} width={'100%'}>
                 <LiveCardPreviewOuter/>                    
             </Box>
             
-            <Box  padding={5} background={'#f6f6f6'} borderRadius={15} height={220} width={'100%'}>
-                <Heading>Hubs</Heading>
+            <Box  padding={5} background={'#1d1f21'} borderRadius={15} height={210} width={'100%'}>
+                <HStack width={'100%'}>
+                   <Heading flex={1} color={'gray'}>Hubs</Heading> 
+                   <Text textDecoration={'underline'} color={'gray'} fontSize={10}>see all</Text>
+                </HStack>
+                
                 <HStack className="post-horizontal" gap={2} justifyContent={'flex-start'} width={'100%'} overflowX={'auto'}>
                 {
-                            hubs.map((item, index)=>{
+                            hubs?.map((item:any, index)=>{
                                 return(
                                     <HStack key={index} marginTop={4} justifyContent={'flex-start'} minWidth={200}>
                                     <Box position={'relative'} background={'white'} borderRadius={10} height={100} width={100}>
@@ -34,7 +37,13 @@ export default async function SideRight(){
                                 )
                             })  
                             }
-
+                            {hubs?.length <= 0 &&  
+                            <VStack width={'100%'} marginTop={4}>
+                                <Box className="hubc" cursor={'pointer'} background={'#17191a'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'} display={'flex'} borderRadius={10} height={100} width={'100%'}>
+                                        <Text fontSize={12} color={'gray'}>Nothing here yet</Text>
+                                </Box>
+                            </VStack>
+                            }
                 </HStack>
                
                 

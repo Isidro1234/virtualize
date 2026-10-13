@@ -2,7 +2,6 @@
 import { Box, Button, HStack, Input, Heading, Textarea, VStack } from '@chakra-ui/react'
 import React, { useRef, useState } from 'react'
 import { Icons } from '../../utils/exportIcons'
-import { addEvent } from '../../app/actions/auth'
 import { CustomSelect } from './CustomSelect'
 import { toaster } from '../ui/toaster'
 import { store } from '../../utils/storemedia'
@@ -101,9 +100,9 @@ export default function EventsaddingComp() {
             return
         }
 
-        const res = await addEvent(eventname, limitNum, allowedEntryTo, eventType, photo_url,
+        const res = null /* await addEvent(eventname, limitNum, allowedEntryTo, eventType, photo_url,
           eventdescription, eventlocation !== 'online' ? eventlocation : null
-        )
+        )*/
         if (!res) {
             toaster.create({
                 title: 'error in submission',

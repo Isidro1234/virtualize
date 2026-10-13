@@ -3,7 +3,6 @@ import { Box, Button, HStack, Input, Textarea, VStack } from "@chakra-ui/react"
 import React, { useEffect, useRef, useState } from "react"
 import { Icons } from "../../utils/exportIcons"
 import { store } from "../../utils/storemedia"
-import { postVideo } from "../../app/actions/auth"
 import { toaster, Toaster } from "../ui/toaster"
 
 type VideoMode = "short" | "long"
@@ -117,7 +116,7 @@ export const VideoPostContent = () => {
             setLoading(false)
             return
         }
-        await postVideo(url , title , tags, description)
+        //await postVideo(url , title , tags, description)
         toaster.create({
                 title:'post uploaded with success',
                 type:'success',
@@ -168,7 +167,7 @@ export const VideoPostContent = () => {
             setLoading(false)
             return
         }
-        await postVideo(url , title , tags, description)
+       // await postVideo(url , title , tags, description)
         toaster.create({
                 title:'post uploaded with success',
                 type:'success',

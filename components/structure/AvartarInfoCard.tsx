@@ -1,5 +1,4 @@
-import React from 'react'
-import {HStack , Avatar , Box , Text , Heading} from '@chakra-ui/react'
+import {HStack , Avatar} from '@chakra-ui/react'
 
 
 

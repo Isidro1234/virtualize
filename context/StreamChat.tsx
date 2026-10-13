@@ -3,43 +3,38 @@
 import { createContext, useContext } from "react";
 import { Chat, useCreateChatClient } from "stream-chat-react";
 import { StreamChat } from "stream-chat";
+import { getStreamToken } from "../app/lib/stream";
 
-const STREAM_API_KEY = process.env.NEXT_PUBLIC_STREAM_API_KEY || "";
-
-interface StreamChatContextProps {
+interface Props {
   children: React.ReactNode;
+  apiKey: string;
   userdata: any | null;
   uid: string | null;
-  token: string | null;
 }
-interface contextTypes {
+interface ContextTypes {
   user: any;
   client: StreamChat | null;
 }
-const StreamContext = createContext<contextTypes>({ user: null, client: null });
 
-export default function StreamChatContext({ children, token, userdata, uid }: StreamChatContextProps) {
-  if (!token || !userdata || !uid) {
-    return (
-      <StreamContext.Provider value={{ user: userdata, client: null }}>
-        {children}
-      </StreamContext.Provider>
-    );
+const StreamContext = createContext<ContextTypes>({ user: null, client: null });
+
+export default function StreamChatContext({ children, apiKey, userdata, uid }: Props) {
+  if (!apiKey || !userdata || !uid) {
+    return <StreamContext.Provider value={{ user: userdata, client: null }}>{children}</StreamContext.Provider>;
   }
   return (
-    <ConnectedStreamChat token={token} userdata={userdata} uid={uid}>
+    <ConnectedStreamChat apiKey={apiKey} userdata={userdata} uid={uid}>
       {children}
     </ConnectedStreamChat>
   );
 }
 
-function ConnectedStreamChat({
-  children, token, userdata, uid,
-}: { children: React.ReactNode; token: string; userdata: any; uid: string }) {
+function ConnectedStreamChat({ children, apiKey, userdata, uid }: Props & { apiKey: string; uid: string }) {
   const client = useCreateChatClient({
-    apiKey: STREAM_API_KEY,
-    tokenOrProvider: token,
-    userData: { id: uid, name: userdata?.name, image: userdata?.photo },
+    apiKey,
+    tokenOrProvider: getStreamToken,
+    // `username`, matching the video client. `name` doesn't exist on your user docs.
+    userData: { id: uid, name: userdata?.username, image: userdata?.photo },
   });
 
   return (

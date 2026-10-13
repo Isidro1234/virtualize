@@ -28,12 +28,12 @@ export default function LiveCardPreviewOuter() {
       inFlightRef.current = true
 
       try {
-        const { calls } = await videoClient!.queryCalls({
+        const { calls } = await videoClient!?.queryCalls({
           filter_conditions: { ongoing: true },
           sort: [{ field: 'created_at', direction: -1 }],
           limit: 1,
         })
-
+        if(!calls) return <div>no calls yet!</div>;
         if (cancelledRef.current) return
 
         const nextLive = calls[0] ?? null

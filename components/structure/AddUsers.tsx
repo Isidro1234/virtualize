@@ -4,7 +4,6 @@ import React, { useRef, useState } from 'react'
 import { CustomSelect } from '../../components/structure/CustomSelect'
 import { store } from '../../utils/storemedia'
 import { toaster, Toaster } from '../../components/ui/toaster'
-import { creatAuthAccount, deleteSession } from '../../app/actions/auth'
 import { useRouter } from 'next/navigation'
 
 const COLORS = {
@@ -93,13 +92,13 @@ export default function AddUSer() {
   }
 
   // 3. Create Account & Save Database Record
-  const success = await creatAuthAccount(name, email, password, imageurl || null, usercat[0], country,
-    {experience , degree , profession , uni}
-  )
+ // const success = await creatAuthAccount(name, email, password, imageurl || null, usercat[0], country,
+ //   {experience , degree , profession , uni}
+  //)
 
   setLoading(false)
 
-  if (success) {
+  if (false) {
     toaster.create({
       title: "User successfully created",
       duration: 5000,
@@ -125,7 +124,7 @@ export default function AddUSer() {
 
 
 async function handlelogout(){
-  await deleteSession()
+  //await deleteSession()
   router.push('/')
 }
   return (

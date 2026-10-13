@@ -2,7 +2,6 @@
 import { Button, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { Icons } from '../../utils/exportIcons'
-import { addLikes } from '../../app/actions/auth'
 
 export default function LikeButton({uid, likes}:{uid:string, likes:number}) {
     const [count, setCount] = useState(likes)
@@ -15,7 +14,7 @@ export default function LikeButton({uid, likes}:{uid:string, likes:number}) {
         setLiked((prev) => !prev)
         setCount((prev) => prev + (liked ? -1 : 1))
         try {
-            await addLikes(uid)
+           // await addLikes(uid)
         } finally {
             setPending(false)
         }

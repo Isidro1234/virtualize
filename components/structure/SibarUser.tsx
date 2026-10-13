@@ -1,8 +1,6 @@
 "use client"
-import { Avatar, Box, Heading, HStack, Text, VStack } from '@chakra-ui/react'
-import React from 'react'
+import { Box, VStack } from '@chakra-ui/react'
 import { Icons } from '../../utils/exportIcons'
-import DialogingComp from './DialogingComp'
 import Image from 'next/image'
 import ButtonCustom from './ButtonCustom'
 import { usePathname } from 'next/navigation'

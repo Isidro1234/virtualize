@@ -1,7 +1,6 @@
 "use client"
-import { Box, Button, HStack, Input , Text, VStack} from '@chakra-ui/react'
+import {  Text, VStack} from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
-import { Icons } from '../../utils/exportIcons'
 import { useStreamContext } from '../../context/StreamVideo'
 import { Call } from '@stream-io/video-react-sdk';
 import LiveDisplay from './LiveDisplay'

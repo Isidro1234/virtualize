@@ -1,4 +1,3 @@
-import React from 'react'
 import HomeCustom from '../components/structure/HomeCustom'
 import { Metadata } from 'next'
 

@@ -1,21 +1,23 @@
 "use server"
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { adminAuth } from '../../config/admin-firestore';
-import { deleteSession } from '../actions/auth';
+import { decrypting, deleteSession } from './sessions';
+
+
+
 
 export async function VerifySession() {
   const cookieStore = await cookies();
-  const token = cookieStore.get('session_virtualise')?.value;
+  const token = cookieStore.get('session')?.value;
 
   if (!token) {
-    redirect('/login');
+    return null
   }
-
   try {
-    const verifiedUser = await adminAuth.verifySessionCookie(token, true);
-    return { isAuth: true, userId: verifiedUser.uid };
+    const verifiedUser = await decrypting(token);
+    return { isAuth: true, role: verifiedUser?.role, userId: verifiedUser?.userid  };
   } catch (error: any) {
-    redirect('/login');
+    return redirect('/login')
   }
 }
+

@@ -1,5 +1,5 @@
 "use client"
-import { Heading, HStack, VStack } from '@chakra-ui/react'
+import {  HStack, VStack } from '@chakra-ui/react'
 import { StreamCall, useCalls } from '@stream-io/video-react-sdk'
 import React from 'react'
 import AvatarLiveCircle from './AvartarLiveCircle'

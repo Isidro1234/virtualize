@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import { CustomSelect } from './CustomSelect'
 import ClassRoomDisplayById from './ClassRoomDisplayById'
 import { Toaster, toaster } from '../ui/toaster'
-import { addClassSession } from '../../app/actions/auth'
 
 export default function AddSession({courses}:{courses:any}) {
     const [course , setCourse] = useState<any>(null)
@@ -23,19 +22,7 @@ export default function AddSession({courses}:{courses:any}) {
         setLoading(false)
           return
        }
-      const res = await addClassSession({class1:classroom1 , class2:classroom2,
-        course:course?.id , time:course?.time
-      })
-
-      if(!res){
-          toaster.create({
-          title:"Missing Information",
-          duration:5000,
-          type:'error'
-        })
-        setLoading(false)
-          return
-      }
+    
       toaster.create({
           title:"Session Created",
           duration:5000,

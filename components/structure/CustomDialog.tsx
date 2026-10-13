@@ -1,4 +1,5 @@
-import { Button, CloseButton, Dialog, Portal } from "@chakra-ui/react"
+"use client"
+import { CloseButton, Dialog, Portal } from "@chakra-ui/react"
 import React from "react"
 
 

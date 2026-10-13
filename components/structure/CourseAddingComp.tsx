@@ -4,7 +4,7 @@ import React, { useMemo, useRef, useState } from 'react'
 import { CustomSelect } from '../../components/structure/CustomSelect'
 import { store } from '../../utils/storemedia'
 import { toaster, Toaster } from '../../components/ui/toaster'
-import { creatAuthAccount, addCourse } from '../../app/actions/auth'
+//import { addCourse } from '../../app/actions/auth'
 import { Icons } from '../../utils/exportIcons'
 import Image from 'next/image'
 
@@ -68,7 +68,7 @@ export default function AddUser({universityList , courses , professors}:{
   const [secondaryCountry, setSecondaryCountry] = useState("")
   const [mainState, setMainState] = useState("")
   const [secondaryState, setSecondaryState] = useState("")
-
+  const [modality, setModality] = useState("")
   const refphoto = useRef<HTMLInputElement>(null)
 
   const professorItems = useMemo(
@@ -129,7 +129,7 @@ export default function AddUser({universityList , courses , professors}:{
       ...(courseMode === 'partial' && coProfessor ? [coProfessor] : [])
     ].filter(Boolean)
 
-    const courseCreated = await addCourse(
+    const courseCreated = '' /* await addCourse(
       courseName,
       courseMode,
       professorIds,
@@ -142,7 +142,7 @@ export default function AddUser({universityList , courses , professors}:{
       selectedDays,
       `${startTime}-${endTime}`
     )
-
+*/
     setLoading(false)
     if (courseCreated) {
       toaster.create({ title: "Course created", duration: 5000, type: "success" })
@@ -230,7 +230,15 @@ export default function AddUser({universityList , courses , professors}:{
             </HStack>
           </Box>
         </Box>
-
+        <CustomSelect 
+              onchange={(val: any) => setModality(val[0])}
+              items={[
+                { label: "Professional", value: "professional" },
+                { label: "Academic", value: "academic" },
+              ]}
+              title='Course Modality'
+              placeholder='Select course Modality'
+            />
         {/* Course Sharing Mode & Professors */}
         <Box {...sectionProps}>
           <Heading fontSize={16} fontWeight={600} color={'white'} mb={4}>Course Sharing & Faculty</Heading>

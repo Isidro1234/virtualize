@@ -1,6 +1,7 @@
+"use client"
 import { Box, Button, Span, VStack } from '@chakra-ui/react'
 import { ParticipantView, useCallStateHooks } from '@stream-io/video-react-sdk'
-import { useEffect } from 'react'
+
 
 export function CustomLivestreamView() {
   const { useParticipants , useIsCallLive} = useCallStateHooks()
